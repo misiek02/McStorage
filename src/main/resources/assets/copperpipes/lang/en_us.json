@@ -53,5 +53,11 @@
   "direction.copperpipes.up": "up",
   "direction.copperpipes.down": "down",
   "commands.copperpipes.config": "Pipe item rendering: render=%s, distance=%s blocks (max 96), max=%s items. Change with /cpconfig distance|max|render",
+  "gui.copperpipes.config.button": "Copper Pipes...",
+  "gui.copperpipes.config.title": "Copper Pipes - item rendering",
+  "gui.copperpipes.config.render": "Show items in pipes",
+  "gui.copperpipes.config.distance": "Render distance: %s blocks",
+  "gui.copperpipes.config.max_items": "Max visible items: %s",
+  "gui.copperpipes.config.hint": "More items and distance = nicer, but lower FPS",
   "itemGroup.copperpipes.main": "Copper Pipes"
 }

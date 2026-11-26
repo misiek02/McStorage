@@ -5,20 +5,39 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
+import net.fabricmc.fabric.api.client.screen.v1.Screens;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.screens.options.OptionsScreen;
 import net.minecraft.network.chat.Component;
+import pl.misiek.copperpipes.client.screen.CopperPipesConfigScreen;
 
 /**
- * {@code /cpconfig} shows the visual settings; {@code /cpconfig distance <blocks>}, {@code /cpconfig max <items>}
+ * {@code /cpconfig} opens the settings screen (also reachable from Options); {@code /cpconfig distance <blocks>}, {@code /cpconfig max <items>}
  * and {@code /cpconfig render <true|false>} change them immediately and save the config file.
  */
 public final class ConfigCommand {
+	private static boolean openScreenNextTick;
+
 	private ConfigCommand() {
 	}
 
 	public static void register() {
+		addOptionsButton();
+		ClientTickEvents.END_CLIENT_TICK.register(client -> {
+			if (openScreenNextTick) {
+				openScreenNextTick = false;
+				client.gui.setScreen(new CopperPipesConfigScreen(null));
+			}
+		});
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, buildContext) -> dispatcher.register(
 				ClientCommands.literal("cpconfig")
-						.executes(context -> show(context.getSource()))
+						.executes(context -> {
+							// The chat screen closes right after the command runs, so open the settings on the next tick.
+							openScreenNextTick = true;
+							return 1;
+						})
 						.then(ClientCommands.literal("distance")
 								.then(ClientCommands.argument("blocks", IntegerArgumentType.integer(1, ClientConfig.MAX_RENDER_DISTANCE))
 										.executes(context -> {
@@ -37,6 +56,16 @@ public final class ConfigCommand {
 											ClientConfig.get().renderItems = BoolArgumentType.getBool(context, "enabled");
 											return saveAndShow(context.getSource());
 										})))));
+	}
+
+	/** Adds a "Copper Pipes..." button to the corner of the vanilla Options screen. */
+	private static void addOptionsButton() {
+		ScreenEvents.AFTER_INIT.register((client, screen, width, height) -> {
+			if (screen instanceof OptionsScreen) {
+				Screens.getWidgets(screen).add(Button.builder(Component.translatable("gui.copperpipes.config.button"),
+						button -> client.gui.setScreen(new CopperPipesConfigScreen(screen))).bounds(width - 126, 6, 120, 20).build());
+			}
+		});
 	}
 
 	private static int saveAndShow(FabricClientCommandSource source) {

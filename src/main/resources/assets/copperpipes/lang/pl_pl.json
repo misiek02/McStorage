@@ -53,5 +53,11 @@
   "direction.copperpipes.up": "góra",
   "direction.copperpipes.down": "dół",
   "commands.copperpipes.config": "Renderowanie przedmiotów w rurach: render=%s, zasięg=%s bloków (max 96), max=%s przedmiotów. Zmiana: /cpconfig distance|max|render",
+  "gui.copperpipes.config.button": "Miedziane rury...",
+  "gui.copperpipes.config.title": "Miedziane rury - widoczne przedmioty",
+  "gui.copperpipes.config.render": "Pokaż przedmioty w rurach",
+  "gui.copperpipes.config.distance": "Zasięg: %s bloków",
+  "gui.copperpipes.config.max_items": "Maks. widocznych: %s",
+  "gui.copperpipes.config.hint": "Więcej przedmiotów i zasięgu = ładniej, ale mniej FPS",
   "itemGroup.copperpipes.main": "Miedziane rury"
 }
