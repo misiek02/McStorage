@@ -42,6 +42,7 @@ public final class CopperPipesCommand {
 				Commands.literal("copperpipes")
 						.requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
 						.then(Commands.literal("stats").executes(CopperPipesCommand::stats))
+						.then(Commands.literal("demo").executes(context -> DemoBuilder.build(context.getSource())))
 						.then(Commands.literal("stress")
 								.then(Commands.argument("rigs", IntegerArgumentType.integer(1, 64))
 										.then(Commands.argument("length", IntegerArgumentType.integer(1, 64))
