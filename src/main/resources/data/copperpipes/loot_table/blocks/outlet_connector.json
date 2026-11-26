@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "condition": {
+        "type": "minecraft:survives_explosion"
+      },
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "copperpipes:outlet_connector"
+        }
+      ],
+      "rolls": 1
+    }
+  ],
+  "random_sequence": "copperpipes:blocks/outlet_connector"
+}

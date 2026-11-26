@@ -19,6 +19,8 @@ public class GenTextures {
 		frame("weathered_copper_pipe_frame", 0x86B98A, 0x56875A);
 		frame("oxidized_copper_pipe_frame", 0x6FC3A4, 0x3F8A6E);
 		glass("copper_pipe_glass");
+		connectorFace("inlet_connector_face", 0x4FC46A, 0x2E7D40);
+		connectorFace("outlet_connector_face", 0x4F8FE0, 0x2D5A9A);
 		new File(DIR + "copper_pipe.png").delete(); // old milestone 2 texture
 	}
 
@@ -42,10 +44,26 @@ public class GenTextures {
 		for (int y = 0; y < 16; y++) {
 			for (int x = 0; x < 16; x++) {
 				int d = (x + y) % 16;
-				int argb = 0x38CFEAF2;
-				if (d == 9 || d == 10) argb = 0x80F4FCFF;
-				if (d == 12) argb = 0x60F4FCFF;
+				int argb = 0x1ED8EEF4;
+				if (d == 9 || d == 10) argb = 0x58F4FCFF;
+				if (d == 12) argb = 0x3CF4FCFF;
 				img.setRGB(x, y, argb);
+			}
+		}
+		write(img, name);
+	}
+
+	/** Copper plate with a coloured 6x6 marker in the middle (green = inlet, blue = outlet). */
+	static void connectorFace(String name, int marker, int markerDark) throws Exception {
+		BufferedImage img = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
+		for (int y = 0; y < 16; y++) {
+			for (int x = 0; x < 16; x++) {
+				int rgb = ((x + 2 * y) % 5 == 0) ? 0xD07650 : 0xC0643F;
+				if (x == 2 || y == 2 || x == 13 || y == 13) rgb = 0x8F4A30;
+				if (x >= 5 && x <= 10 && y >= 5 && y <= 10) {
+					rgb = (x == 5 || y == 5 || x == 10 || y == 10) ? markerDark : marker;
+				}
+				img.setRGB(x, y, 0xFF000000 | rgb);
 			}
 		}
 		write(img, name);

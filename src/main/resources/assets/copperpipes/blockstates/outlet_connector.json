@@ -1,0 +1,16 @@
+{
+  "multipart": [
+    { "when": { "facing": "north" }, "apply": { "model": "copperpipes:block/outlet_connector" } },
+    { "when": { "facing": "east" }, "apply": { "model": "copperpipes:block/outlet_connector", "y": 90 } },
+    { "when": { "facing": "south" }, "apply": { "model": "copperpipes:block/outlet_connector", "y": 180 } },
+    { "when": { "facing": "west" }, "apply": { "model": "copperpipes:block/outlet_connector", "y": 270 } },
+    { "when": { "facing": "up" }, "apply": { "model": "copperpipes:block/outlet_connector", "x": 270 } },
+    { "when": { "facing": "down" }, "apply": { "model": "copperpipes:block/outlet_connector", "x": 90 } },
+    { "when": { "north": "true" }, "apply": { "model": "copperpipes:block/copper_pipe_arm" } },
+    { "when": { "east": "true" }, "apply": { "model": "copperpipes:block/copper_pipe_arm", "y": 90 } },
+    { "when": { "south": "true" }, "apply": { "model": "copperpipes:block/copper_pipe_arm", "y": 180 } },
+    { "when": { "west": "true" }, "apply": { "model": "copperpipes:block/copper_pipe_arm", "y": 270 } },
+    { "when": { "up": "true" }, "apply": { "model": "copperpipes:block/copper_pipe_arm", "x": 270 } },
+    { "when": { "down": "true" }, "apply": { "model": "copperpipes:block/copper_pipe_arm", "x": 90 } }
+  ]
+}

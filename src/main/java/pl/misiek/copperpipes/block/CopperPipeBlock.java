@@ -1,6 +1,5 @@
 package pl.misiek.copperpipes.block;
 
-import java.util.Map;
 import java.util.function.Function;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -14,9 +13,7 @@ import net.minecraft.world.level.block.PipeBlock;
 import net.minecraft.world.level.block.WeatheringCopper;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.shapes.CollisionContext;
-import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 /**
@@ -24,10 +21,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
  * Connections are stored in six boolean properties and updated only when a neighbour changes.
  */
 public class CopperPipeBlock extends Block {
-	public static final Map<Direction, BooleanProperty> PROPERTY_BY_DIRECTION = PipeBlock.PROPERTY_BY_DIRECTION;
-
 	private static final VoxelShape CORE = Block.box(4, 4, 4, 12, 12, 12);
-	private static final Map<Direction, VoxelShape> ARMS = Shapes.rotateAll(Block.boxZ(8, 0, 4));
 
 	private final WeatheringCopper.WeatherState weatherState;
 	private final Function<BlockState, VoxelShape> shapes;
@@ -35,12 +29,8 @@ public class CopperPipeBlock extends Block {
 	public CopperPipeBlock(WeatheringCopper.WeatherState weatherState, Properties properties) {
 		super(properties);
 		this.weatherState = weatherState;
-		BlockState state = this.stateDefinition.any();
-		for (BooleanProperty property : PROPERTY_BY_DIRECTION.values()) {
-			state = state.setValue(property, false);
-		}
-		this.registerDefaultState(state);
-		this.shapes = this.getShapeForEachState(CopperPipeBlock::computeShape);
+		this.registerDefaultState(PipeConnections.withoutConnections(this.stateDefinition.any()));
+		this.shapes = this.getShapeForEachState(state -> PipeConnections.addArms(CORE, state));
 	}
 
 	public WeatheringCopper.WeatherState getAge() {
@@ -57,16 +47,6 @@ public class CopperPipeBlock extends Block {
 		};
 	}
 
-	private static VoxelShape computeShape(BlockState state) {
-		VoxelShape shape = CORE;
-		for (Map.Entry<Direction, BooleanProperty> entry : PROPERTY_BY_DIRECTION.entrySet()) {
-			if (state.getValue(entry.getValue())) {
-				shape = Shapes.or(shape, ARMS.get(entry.getKey()));
-			}
-		}
-		return shape;
-	}
-
 	@Override
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
 		builder.add(PipeBlock.NORTH, PipeBlock.EAST, PipeBlock.SOUTH, PipeBlock.WEST, PipeBlock.UP, PipeBlock.DOWN);
@@ -79,24 +59,13 @@ public class CopperPipeBlock extends Block {
 
 	@Override
 	public BlockState getStateForPlacement(BlockPlaceContext context) {
-		BlockGetter level = context.getLevel();
-		BlockPos pos = context.getClickedPos();
-		BlockState state = this.defaultBlockState();
-		for (Direction direction : Direction.values()) {
-			BlockState neighbour = level.getBlockState(pos.relative(direction));
-			state = state.setValue(PROPERTY_BY_DIRECTION.get(direction), canConnectTo(neighbour));
-		}
-		return state;
+		return PipeConnections.withConnections(context.getLevel(), context.getClickedPos(), this.defaultBlockState());
 	}
 
 	@Override
 	protected BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess ticks, BlockPos pos,
 			Direction directionToNeighbour, BlockPos neighbourPos, BlockState neighbourState, RandomSource random) {
-		return state.setValue(PROPERTY_BY_DIRECTION.get(directionToNeighbour), canConnectTo(neighbourState));
-	}
-
-	/** Pipes connect to other pipes; connectors are added here in milestone 5. */
-	public static boolean canConnectTo(BlockState neighbour) {
-		return neighbour.getBlock() instanceof CopperPipeBlock;
+		return state.setValue(PipeConnections.PROPERTY_BY_DIRECTION.get(directionToNeighbour),
+				PipeConnections.canConnect(state, directionToNeighbour, neighbourState));
 	}
 }

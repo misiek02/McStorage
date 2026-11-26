@@ -7,5 +7,7 @@
   "block.copperpipes.waxed_exposed_copper_pipe": "Miedziana rura, naruszona (woskowana)",
   "block.copperpipes.waxed_weathered_copper_pipe": "Miedziana rura, zwietrzała (woskowana)",
   "block.copperpipes.waxed_oxidized_copper_pipe": "Miedziana rura, utleniona (woskowana)",
+  "block.copperpipes.inlet_connector": "Konektor wejściowy",
+  "block.copperpipes.outlet_connector": "Konektor wyjściowy",
   "itemGroup.copperpipes.main": "Miedziane rury"
 }
