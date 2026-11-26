@@ -1,0 +1,27 @@
+{
+	"schemaVersion": 1,
+	"id": "copperpipes",
+	"version": "${version}",
+	"name": "Copper Pipes",
+	"description": "Lightweight, event-driven item sorting with copper pipes, connectors and sorting cards.",
+	"authors": [
+		"Michał Suski"
+	],
+	"license": "All-Rights-Reserved",
+	"icon": "assets/copperpipes/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"pl.misiek.copperpipes.CopperPipes"
+		],
+		"client": [
+			"pl.misiek.copperpipes.client.CopperPipesClient"
+		]
+	},
+	"depends": {
+		"fabricloader": ">=0.20.1",
+		"minecraft": "~26.3",
+		"java": ">=25",
+		"fabric-api": "*"
+	}
+}
