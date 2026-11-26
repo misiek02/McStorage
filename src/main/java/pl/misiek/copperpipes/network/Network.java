@@ -18,7 +18,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import pl.misiek.copperpipes.block.ConnectorBlock;
 import pl.misiek.copperpipes.block.CopperPipeBlock;
 import pl.misiek.copperpipes.block.InletConnectorBlock;
@@ -63,11 +62,11 @@ final class Network {
 		while (!queue.isEmpty() && network.nodes.size() < MAX_NODES) {
 			long pos = queue.dequeueLong();
 			BlockState state = level.getBlockState(BlockPos.of(pos));
-			for (Map.Entry<Direction, BooleanProperty> entry : PipeConnections.PROPERTY_BY_DIRECTION.entrySet()) {
-				if (!state.hasProperty(entry.getValue()) || !state.getValue(entry.getValue())) {
+			for (Direction direction : Direction.values()) {
+				if (!PipeConnections.isConnected(state, direction)) {
 					continue;
 				}
-				next.set(pos).move(entry.getKey());
+				next.set(pos).move(direction);
 				long nextPos = next.asLong();
 				if (network.nodes.contains(nextPos)) {
 					continue;
@@ -171,11 +170,11 @@ final class Network {
 			if (pos != outlet && state.getBlock() instanceof InletConnectorBlock) {
 				continue;
 			}
-			for (Map.Entry<Direction, BooleanProperty> e : PipeConnections.PROPERTY_BY_DIRECTION.entrySet()) {
-				if (!state.hasProperty(e.getValue()) || !state.getValue(e.getValue())) {
+			for (Direction direction : Direction.values()) {
+				if (!PipeConnections.isConnected(state, direction)) {
 					continue;
 				}
-				next.set(pos).move(e.getKey());
+				next.set(pos).move(direction);
 				long nextPos = next.asLong();
 				if (!this.nodes.contains(nextPos)) {
 					continue;

@@ -43,5 +43,14 @@
   "commands.copperpipes.stress": "Zbudowano %s stanowisk testowych po %s rur (%s wyjść); przedmioty krążą teraz między beczkami",
   "commands.copperpipes.fps.start": "Mierzę FPS przez %s s...",
   "commands.copperpipes.fps.result": "FPS: średnio %s, min %s, max %s; animowanych przedmiotów w rurach: do %s",
+  "item.copperpipes.pipe_wrench": "Klucz do rur",
+  "item.copperpipes.pipe_wrench.disabled": "Odłączono stronę: %s",
+  "item.copperpipes.pipe_wrench.enabled": "Podłączono stronę: %s",
+  "direction.copperpipes.north": "północ",
+  "direction.copperpipes.south": "południe",
+  "direction.copperpipes.east": "wschód",
+  "direction.copperpipes.west": "zachód",
+  "direction.copperpipes.up": "góra",
+  "direction.copperpipes.down": "dół",
   "itemGroup.copperpipes.main": "Miedziane rury"
 }

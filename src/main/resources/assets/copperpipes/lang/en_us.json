@@ -43,5 +43,14 @@
   "commands.copperpipes.stress": "Built %s test rigs with %s pipes each (%s outlets); items now circulate between the barrels",
   "commands.copperpipes.fps.start": "Measuring FPS for %s s...",
   "commands.copperpipes.fps.result": "FPS: avg %s, min %s, max %s; up to %s pipe items animated",
+  "item.copperpipes.pipe_wrench": "Pipe Wrench",
+  "item.copperpipes.pipe_wrench.disabled": "Disconnected side: %s",
+  "item.copperpipes.pipe_wrench.enabled": "Reconnected side: %s",
+  "direction.copperpipes.north": "north",
+  "direction.copperpipes.south": "south",
+  "direction.copperpipes.east": "east",
+  "direction.copperpipes.west": "west",
+  "direction.copperpipes.up": "up",
+  "direction.copperpipes.down": "down",
   "itemGroup.copperpipes.main": "Copper Pipes"
 }

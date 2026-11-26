@@ -13,7 +13,6 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
-import net.minecraft.world.level.block.PipeBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -44,7 +43,8 @@ public abstract class ConnectorBlock extends Block implements EntityBlock {
 
 	@Override
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-		builder.add(FACING, PipeBlock.NORTH, PipeBlock.EAST, PipeBlock.SOUTH, PipeBlock.WEST, PipeBlock.UP, PipeBlock.DOWN);
+		builder.add(FACING);
+		builder.add(PipeConnections.properties());
 	}
 
 	@Override
@@ -77,8 +77,7 @@ public abstract class ConnectorBlock extends Block implements EntityBlock {
 	@Override
 	protected BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess ticks, BlockPos pos,
 			Direction directionToNeighbour, BlockPos neighbourPos, BlockState neighbourState, RandomSource random) {
-		return state.setValue(PipeConnections.PROPERTY_BY_DIRECTION.get(directionToNeighbour),
-				PipeConnections.canConnect(state, directionToNeighbour, neighbourState));
+		return PipeConnections.updateSide(state, directionToNeighbour, neighbourState);
 	}
 
 	/** Position of the attached container. */

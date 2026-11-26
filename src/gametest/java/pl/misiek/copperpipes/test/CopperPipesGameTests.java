@@ -19,6 +19,7 @@ import pl.misiek.copperpipes.block.entity.InletBlockEntity;
 import pl.misiek.copperpipes.card.CardCopyRecipe;
 import pl.misiek.copperpipes.card.CardFilter;
 import pl.misiek.copperpipes.card.SortingCard;
+import pl.misiek.copperpipes.item.PipeWrenchItem;
 import pl.misiek.copperpipes.network.PipeNetworks;
 import pl.misiek.copperpipes.registry.ModBlocks;
 import pl.misiek.copperpipes.registry.ModComponents;
@@ -183,6 +184,33 @@ public class CopperPipesGameTests {
 		helper.assertTrue(CardFilter.Rule.of(CardFilter.Rule.Kind.ITEM, "Zle", false).isEmpty(), "upper case is not a valid id");
 		helper.assertTrue(CardFilter.Rule.of(CardFilter.Rule.Kind.MOD, "minecraft", false).orElseThrow().exists(), "the minecraft mod exists");
 		helper.assertFalse(CardFilter.Rule.of(CardFilter.Rule.Kind.TAG, "minecraft:nope", false).orElseThrow().exists(), "unknown tag does not exist");
+		helper.succeed();
+	}
+
+	@GameTest(maxTicks = 200)
+	public void wrenchDisconnectsASide(GameTestHelper helper) {
+		buildLayout(helper, ModBlocks.COPPER_PIPE.weathering().unaffected());
+		BlockPos pipeNextToA = helper.absolutePos(new BlockPos(3, 1, 1));
+		helper.assertTrue(PipeWrenchItem.toggleSide(helper.getLevel(), pipeNextToA, Direction.SOUTH), "first toggle disables");
+		helper.assertFalse(PipeConnections.isConnected(helper.getLevel().getBlockState(helper.absolutePos(INLET_A)), Direction.NORTH),
+				"inlet A drops its link to the disabled pipe side");
+		fill(helper, SOURCE, new ItemStack(Items.STONE, 32));
+
+		helper.succeedWhen(() -> {
+			helper.assertTrue(count(helper, BARREL_B, Items.STONE) == 32, "everything goes to inlet B");
+			helper.assertTrue(count(helper, BARREL_A, Items.STONE) == 0, "inlet A is cut off");
+		});
+	}
+
+	@GameTest
+	public void wrenchReconnectsASide(GameTestHelper helper) {
+		buildLayout(helper, ModBlocks.COPPER_PIPE.weathering().unaffected());
+		BlockPos pipe = helper.absolutePos(new BlockPos(3, 1, 1));
+		PipeWrenchItem.toggleSide(helper.getLevel(), pipe, Direction.SOUTH);
+		helper.assertFalse(PipeWrenchItem.toggleSide(helper.getLevel(), pipe, Direction.SOUTH), "second toggle enables");
+		helper.assertTrue(PipeConnections.isConnected(helper.getLevel().getBlockState(pipe), Direction.SOUTH), "pipe links to inlet A again");
+		helper.assertTrue(PipeConnections.isConnected(helper.getLevel().getBlockState(helper.absolutePos(INLET_A)), Direction.NORTH),
+				"inlet A links back");
 		helper.succeed();
 	}
 

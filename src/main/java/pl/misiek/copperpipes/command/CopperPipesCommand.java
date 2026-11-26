@@ -69,7 +69,7 @@ public final class CopperPipesCommand {
 	 *   z:   [barrel A][outlet ->][pipe x length][-> inlet][barrel B]
 	 *   z+1: [inlet ^ ][pipe x (length + 2)          ][outlet ^]
 	 * </pre>
-	 * Both rows share one network; A's outlet can only deliver to B and B's outlet only to A, so items loop.
+	 * The rows are disconnected from each other (wrench-style), so A's outlet feeds B and B's outlet feeds A: items loop.
 	 */
 	private static int stress(CommandContext<CommandSourceStack> context) {
 		CommandSourceStack source = context.getSource();
@@ -78,6 +78,7 @@ public final class CopperPipesCommand {
 		int length = IntegerArgumentType.getInteger(context, "length");
 		BlockPos origin = BlockPos.containing(source.getPosition()).east(2);
 		List<BlockPos> connectable = new ArrayList<>();
+		List<BlockPos> firstRow = new ArrayList<>();
 
 		for (int r = 0; r < rigs; r++) {
 			BlockPos a = origin.south(r * ROW_SPACING);
@@ -90,6 +91,9 @@ public final class CopperPipesCommand {
 				place(level, connectable, a.east(2 + i), ModBlocks.COPPER_PIPE.waxed().unaffected().defaultBlockState());
 			}
 			place(level, connectable, b.west(1), connector(ModBlocks.INLET_CONNECTOR, Direction.EAST));
+			for (int i = 1; i <= length + 2; i++) {
+				firstRow.add(a.east(i));
+			}
 
 			place(level, connectable, b.south(1), connector(ModBlocks.OUTLET_CONNECTOR, Direction.NORTH));
 			for (int i = 1; i <= length + 2; i++) {
@@ -103,6 +107,10 @@ public final class CopperPipesCommand {
 				}
 				barrel.setChanged();
 			}
+		}
+		// The two rows of a rig run side by side; disconnect them, as a player would with the wrench.
+		for (BlockPos pos : firstRow) {
+			level.setBlock(pos, level.getBlockState(pos).setValue(PipeConnections.PROPERTY_BY_DIRECTION.get(Direction.SOUTH), PipeConnections.Side.DISABLED), Block.UPDATE_ALL);
 		}
 		// setBlock skips placement logic, so compute connections once everything is in place.
 		for (BlockPos pos : connectable) {

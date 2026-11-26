@@ -3,7 +3,7 @@ package pl.misiek.copperpipes.client.render;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.Comparator;
 import java.util.List;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
@@ -32,6 +32,7 @@ import pl.misiek.copperpipes.packet.ItemFlowPayload;
  */
 public final class FlowingItems {
 	private static final List<FlowingItem> ITEMS = new ArrayList<>();
+	private static final List<FlowingItem> VISIBLE = new ArrayList<>();
 	private static final float SCALE = 0.9F;
 
 	private FlowingItems() {
@@ -86,14 +87,27 @@ public final class FlowingItems {
 		double maxDistanceSqr = (double) config.renderDistance * config.renderDistance;
 		double now = level.getGameTime() + client.getDeltaTracker().getGameTimeDeltaPartialTick(false);
 		PoseStack poseStack = context.poseStack();
-		int drawn = 0;
-
-		for (Iterator<FlowingItem> it = ITEMS.iterator(); it.hasNext() && drawn < config.maxVisibleItems; ) {
-			FlowingItem item = it.next();
+		// Collect items in range, then draw only the nearest ones if there are more than the limit.
+		VISIBLE.clear();
+		for (FlowingItem item : ITEMS) {
 			Vec3 pos = item.positionAt(now - item.startTick);
-			if (pos == null || pos.distanceToSqr(camera) > maxDistanceSqr) {
-				continue;
+			if (pos != null) {
+				double distanceSqr = pos.distanceToSqr(camera);
+				if (distanceSqr <= maxDistanceSqr) {
+					item.pos = pos;
+					item.distanceSqr = distanceSqr;
+					VISIBLE.add(item);
+				}
 			}
+		}
+		if (VISIBLE.size() > config.maxVisibleItems) {
+			VISIBLE.sort(Comparator.comparingDouble(item -> item.distanceSqr));
+		}
+		int limit = Math.min(VISIBLE.size(), config.maxVisibleItems);
+
+		for (int i = 0; i < limit; i++) {
+			FlowingItem item = VISIBLE.get(i);
+			Vec3 pos = item.pos;
 			BlockPos blockPos = BlockPos.containing(pos);
 			BlockState state = level.getBlockState(blockPos);
 			if (!(state.getBlock() instanceof CopperPipeBlock || state.getBlock() instanceof ConnectorBlock)) {
@@ -110,7 +124,6 @@ public final class FlowingItems {
 			int light = LightCoordsUtil.pack(level.getBrightness(LightLayer.BLOCK, blockPos), level.getBrightness(LightLayer.SKY, blockPos));
 			item.renderState.submit(poseStack, context.submitNodeCollector(), light, OverlayTexture.NO_OVERLAY, 0);
 			poseStack.popPose();
-			drawn++;
 		}
 	}
 
@@ -121,6 +134,8 @@ public final class FlowingItems {
 		final long startTick;
 		final int spinOffset;
 		boolean dead;
+		Vec3 pos;
+		double distanceSqr;
 
 		FlowingItem(ItemStackRenderState renderState, Vec3[] points, float[] times, long startTick, int spinOffset) {
 			this.renderState = renderState;

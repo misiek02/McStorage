@@ -11,7 +11,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.PipeBlock;
 import net.minecraft.world.level.block.WeatheringCopper;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -52,7 +51,7 @@ public class CopperPipeBlock extends Block {
 
 	@Override
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-		builder.add(PipeBlock.NORTH, PipeBlock.EAST, PipeBlock.SOUTH, PipeBlock.WEST, PipeBlock.UP, PipeBlock.DOWN);
+		builder.add(PipeConnections.properties());
 	}
 
 	@Override
@@ -62,7 +61,17 @@ public class CopperPipeBlock extends Block {
 
 	@Override
 	public BlockState getStateForPlacement(BlockPlaceContext context) {
-		return PipeConnections.withConnections(context.getLevel(), context.getClickedPos(), this.defaultBlockState());
+		BlockState state = PipeConnections.withConnections(context.getLevel(), context.getClickedPos(), this.defaultBlockState());
+		if (context.isSecondaryUseActive()) {
+			// Sneak-placing: link only to the block that was clicked, so parallel pipe lines stay separate.
+			Direction clicked = context.getClickedFace().getOpposite();
+			for (Direction direction : Direction.values()) {
+				if (direction != clicked && PipeConnections.isConnected(state, direction)) {
+					state = state.setValue(PipeConnections.PROPERTY_BY_DIRECTION.get(direction), PipeConnections.Side.DISABLED);
+				}
+			}
+		}
+		return state;
 	}
 
 	@Override
@@ -82,7 +91,6 @@ public class CopperPipeBlock extends Block {
 	@Override
 	protected BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess ticks, BlockPos pos,
 			Direction directionToNeighbour, BlockPos neighbourPos, BlockState neighbourState, RandomSource random) {
-		return state.setValue(PipeConnections.PROPERTY_BY_DIRECTION.get(directionToNeighbour),
-				PipeConnections.canConnect(state, directionToNeighbour, neighbourState));
+		return PipeConnections.updateSide(state, directionToNeighbour, neighbourState);
 	}
 }

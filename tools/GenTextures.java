@@ -23,6 +23,7 @@ public class GenTextures {
 		write(frame(0x6FC3A4, 0x3F8A6E), "oxidized_copper_pipe_frame");
 		glass("copper_pipe_glass");
 		sortingCard();
+		wrench();
 
 		// Connector body sides: frame + arrow. Models map "left" in the _h texture and "up" in the _v texture
 		// towards the attached container, so the inlet arrow points there and the outlet arrow points away.
@@ -116,6 +117,26 @@ public class GenTextures {
 		}
 		ImageIO.write(img, "png", new File(DIR.replace("block/", "item/") + "sorting_card.png"));
 		System.out.println("wrote sorting_card.png");
+	}
+
+	/** Diagonal copper wrench: open jaw at the top right, handle to the bottom left. */
+	static void wrench() throws Exception {
+		BufferedImage img = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
+		int light = 0xFF000000 | COPPER_LIGHT;
+		int dark = 0xFF000000 | COPPER_DARK;
+		for (int i = 2; i <= 10; i++) {
+			img.setRGB(i, 15 - i, light);
+			img.setRGB(i + 1, 15 - i, dark);
+		}
+		int[][] jaw = {{10, 2}, {11, 2}, {12, 3}, {13, 4}, {13, 5}, {12, 6}, {11, 6}, {10, 5}, {9, 4}, {9, 3}, {14, 3}, {14, 6}, {8, 5}};
+		for (int[] p : jaw) {
+			img.setRGB(p[0], p[1], light);
+		}
+		img.setRGB(11, 4, 0);
+		img.setRGB(12, 4, 0);
+		img.setRGB(12, 5, 0);
+		ImageIO.write(img, "png", new File(DIR.replace("block/", "item/") + "pipe_wrench.png"));
+		System.out.println("wrote pipe_wrench.png");
 	}
 
 	static void write(BufferedImage img, String name) throws Exception {

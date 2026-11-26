@@ -18,6 +18,7 @@ public final class ModCreativeTab {
 						output.accept(ModBlocks.OUTLET_CONNECTOR);
 						output.accept(ModBlocks.INLET_CONNECTOR);
 						output.accept(ModItems.SORTING_CARD);
+						output.accept(ModItems.PIPE_WRENCH);
 					})
 					.build());
 
