@@ -28,7 +28,8 @@ fabricApi {
 		modId = "copperpipes-gametest"
 		enableGameTests = true
 		enableClientGameTests = false
-		// The user accepted the Minecraft EULA for local gametest runs (2026-11-26).
+		// Gametests run a local Minecraft server; running them means accepting the Minecraft EULA:
+		// https://aka.ms/MinecraftEULA
 		eula = true
 	}
 }

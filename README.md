@@ -146,13 +146,3 @@ sides).
 [MIT](LICENSE) - free to use, modify and include in modpacks; keep the copyright notice. This covers the code
 and the bundled (placeholder) textures.
 
----
-
-## Po polsku (w skrócie)
-
-Lekki system sortowania przedmiotów do Minecrafta 26.3 (Fabric). Miedziane rury ze szklanymi ściankami łączą
-skrzynie, przedmioty widocznie płyną w środku i trafiają do właściwych skrzyń według kart sortujących.
-Konektor wyjściowy wyciąga ze skrzyni, konektor wejściowy z kartą do niej wkłada, a wejście bez karty zbiera resztę
-(overflow). Karty edytujesz prawym klikiem: reguły po przedmiocie, tagu albo modzie, wykluczenia, priorytet 0-9,
-biała/czarna lista. Klucz do rur odłącza boki, obraca konektory i podnosi bloki. Ustawienia animacji są w
-Opcje -> Miedziane rury..., a `/copperpipes demo` buduje pokazową sortownię.
