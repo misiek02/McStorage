@@ -15,5 +15,12 @@
   "item.copperpipes.sorting_card.priority": "Priority: %s",
   "item.copperpipes.sorting_card.no_rules": "No rules",
   "block.copperpipes.inlet_connector.card_inserted": "Sorting card inserted",
+  "gui.copperpipes.card.rule": "Rule",
+  "gui.copperpipes.card.rule_hint": "#tag, item, @mod, !exclude",
+  "gui.copperpipes.card.no_rules": "No rules yet - type one below",
+  "gui.copperpipes.card.ghost_hint": "Click an item here for ideas",
+  "gui.copperpipes.card.priority": "Priority: %s",
+  "gui.copperpipes.card.whitelist": "Whitelist",
+  "gui.copperpipes.card.blacklist": "Blacklist",
   "itemGroup.copperpipes.main": "Copper Pipes"
 }

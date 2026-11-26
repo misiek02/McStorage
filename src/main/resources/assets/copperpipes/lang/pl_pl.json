@@ -15,5 +15,12 @@
   "item.copperpipes.sorting_card.priority": "Priorytet: %s",
   "item.copperpipes.sorting_card.no_rules": "Brak reguł",
   "block.copperpipes.inlet_connector.card_inserted": "Włożono kartę sortującą",
+  "gui.copperpipes.card.rule": "Reguła",
+  "gui.copperpipes.card.rule_hint": "#tag, przedmiot, @mod, !wyklucz",
+  "gui.copperpipes.card.no_rules": "Brak reguł - wpisz poniżej",
+  "gui.copperpipes.card.ghost_hint": "Kliknij tu przedmiotem - podpowiedzi",
+  "gui.copperpipes.card.priority": "Priorytet: %s",
+  "gui.copperpipes.card.whitelist": "Biała lista",
+  "gui.copperpipes.card.blacklist": "Czarna lista",
   "itemGroup.copperpipes.main": "Miedziane rury"
 }

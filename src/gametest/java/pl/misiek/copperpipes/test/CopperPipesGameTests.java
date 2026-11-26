@@ -9,12 +9,14 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BarrelBlockEntity;
 import pl.misiek.copperpipes.block.ConnectorBlock;
 import pl.misiek.copperpipes.block.PipeConnections;
 import pl.misiek.copperpipes.block.entity.InletBlockEntity;
+import pl.misiek.copperpipes.card.CardCopyRecipe;
 import pl.misiek.copperpipes.card.CardFilter;
 import pl.misiek.copperpipes.card.SortingCard;
 import pl.misiek.copperpipes.network.PipeNetworks;
@@ -172,6 +174,27 @@ public class CopperPipesGameTests {
 		CardFilter invalid = CardFilter.compile(new SortingCard(List.of("#", "@", "!", "Not Valid!", "minecraft:stone"), 0, false));
 		helper.assertTrue(invalid.matches(Items.STONE), "invalid rules are ignored, valid ones still work");
 		helper.assertFalse(invalid.matches(Items.DIRT), "invalid rules match nothing");
+		helper.succeed();
+	}
+
+	// ---------------------------------------------------------------- card copy (milestone 8)
+
+	@GameTest
+	public void cardCopyRecipe(GameTestHelper helper) {
+		ItemStack card = new ItemStack(ModItems.SORTING_CARD);
+		SortingCard data = new SortingCard(List.of("#minecraft:logs", "!minecraft:birch_log"), 7, true);
+		card.set(ModComponents.SORTING_CARD, data);
+		ItemStack paper = new ItemStack(Items.PAPER);
+
+		CraftingInput ok = CraftingInput.of(2, 1, List.of(card, paper));
+		helper.assertTrue(CardCopyRecipe.INSTANCE.matches(ok, helper.getLevel()), "card + paper matches");
+		ItemStack result = CardCopyRecipe.INSTANCE.assemble(ok);
+		helper.assertTrue(result.getCount() == 2, "two cards come out");
+		helper.assertTrue(data.equals(result.get(ModComponents.SORTING_CARD)), "copies keep rules, priority and mode");
+
+		helper.assertFalse(CardCopyRecipe.INSTANCE.matches(CraftingInput.of(1, 1, List.of(card)), helper.getLevel()), "card alone does not match");
+		helper.assertFalse(CardCopyRecipe.INSTANCE.matches(CraftingInput.of(3, 1, List.of(card, paper, paper)), helper.getLevel()), "two papers do not match");
+		helper.assertFalse(CardCopyRecipe.INSTANCE.matches(CraftingInput.of(3, 1, List.of(card, card.copy(), paper)), helper.getLevel()), "two cards do not match");
 		helper.succeed();
 	}
 
