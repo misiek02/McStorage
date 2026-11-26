@@ -45,9 +45,10 @@ public class SortingCardItem extends Item {
 		if (card.rules().isEmpty()) {
 			builder.accept(Component.translatable("item.copperpipes.sorting_card.no_rules").withStyle(ChatFormatting.DARK_GRAY));
 		}
-		for (String rule : card.rules()) {
-			boolean valid = CardFilter.Rule.parse(rule).isPresent();
-			builder.accept(Component.literal("  " + rule).withStyle(valid ? ChatFormatting.AQUA : ChatFormatting.RED));
+		for (String raw : card.rules()) {
+			builder.accept(CardFilter.Rule.parse(raw)
+					.map(rule -> Component.literal("  ").append(rule.describe()).withStyle(rule.negated() ? ChatFormatting.RED : ChatFormatting.AQUA))
+					.orElseGet(() -> Component.literal("  ? " + raw).withStyle(ChatFormatting.DARK_RED)));
 		}
 	}
 }

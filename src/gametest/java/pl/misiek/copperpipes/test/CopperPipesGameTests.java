@@ -174,6 +174,15 @@ public class CopperPipesGameTests {
 		CardFilter invalid = CardFilter.compile(new SortingCard(List.of("#", "@", "!", "Not Valid!", "minecraft:stone"), 0, false));
 		helper.assertTrue(invalid.matches(Items.STONE), "invalid rules are ignored, valid ones still work");
 		helper.assertFalse(invalid.matches(Items.DIRT), "invalid rules match nothing");
+
+		CardFilter.Rule tag = CardFilter.Rule.of(CardFilter.Rule.Kind.TAG, "minecraft:logs", false).orElseThrow();
+		helper.assertTrue(tag.storage().equals("#minecraft:logs") && tag.exists(), "tag rule is stored with # and exists");
+		CardFilter.Rule stone = CardFilter.Rule.of(CardFilter.Rule.Kind.ITEM, "stone", true).orElseThrow();
+		helper.assertTrue(stone.storage().equals("!minecraft:stone"), "item names get the minecraft namespace, exclusion gets !");
+		helper.assertFalse(CardFilter.Rule.of(CardFilter.Rule.Kind.ITEM, "zle", false).orElseThrow().exists(), "a well-formed but unknown item does not exist");
+		helper.assertTrue(CardFilter.Rule.of(CardFilter.Rule.Kind.ITEM, "Zle", false).isEmpty(), "upper case is not a valid id");
+		helper.assertTrue(CardFilter.Rule.of(CardFilter.Rule.Kind.MOD, "minecraft", false).orElseThrow().exists(), "the minecraft mod exists");
+		helper.assertFalse(CardFilter.Rule.of(CardFilter.Rule.Kind.TAG, "minecraft:nope", false).orElseThrow().exists(), "unknown tag does not exist");
 		helper.succeed();
 	}
 

@@ -7,7 +7,9 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.item.ItemStack;
 import pl.misiek.copperpipes.CopperPipes;
 import pl.misiek.copperpipes.card.SortingCard;
 import pl.misiek.copperpipes.menu.CardEditMenu;
@@ -29,7 +31,7 @@ public record UpdateCardPayload(SortingCard card) implements CustomPacketPayload
 		ServerPlayNetworking.registerGlobalReceiver(TYPE, (payload, context) -> apply(context.player(), payload.card()));
 	}
 
-	/** Never trust the client: only the card in the player's hand is changed, and the data is cleaned up first. */
+	/** Never trust the client: only a card in the player's hand is changed, and the data is cleaned up first. */
 	private static void apply(ServerPlayer player, SortingCard card) {
 		InteractionHand hand = CardEditMenu.cardHand(player);
 		if (hand == null) {
@@ -40,6 +42,17 @@ public record UpdateCardPayload(SortingCard card) implements CustomPacketPayload
 				.filter(rule -> !rule.isEmpty() && rule.length() <= MAX_RULE_LENGTH)
 				.limit(SortingCard.MAX_RULES)
 				.toList();
-		player.getItemInHand(hand).set(ModComponents.SORTING_CARD, new SortingCard(rules, card.priority(), card.blacklist()));
+		SortingCard cleaned = new SortingCard(rules, card.priority(), card.blacklist());
+		ItemStack held = player.getItemInHand(hand);
+		if (held.getCount() == 1) {
+			held.set(ModComponents.SORTING_CARD, cleaned);
+			return;
+		}
+		// Editing one card of a stack: split it off, the rest of the stack stays as it was.
+		ItemStack edited = held.split(1);
+		edited.set(ModComponents.SORTING_CARD, cleaned);
+		if (!player.getInventory().add(edited)) {
+			Containers.dropItemStack(player.level(), player.getX(), player.getY(), player.getZ(), edited);
+		}
 	}
 }

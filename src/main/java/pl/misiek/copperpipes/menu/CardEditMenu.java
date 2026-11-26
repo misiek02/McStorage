@@ -19,8 +19,8 @@ import pl.misiek.copperpipes.registry.ModMenus;
 public class CardEditMenu extends AbstractContainerMenu {
 	public static final int GHOST_SLOT = 0;
 	public static final int GHOST_X = 8;
-	public static final int GHOST_Y = 112;
-	public static final int INVENTORY_TOP = 158;
+	public static final int GHOST_Y = 130;
+	public static final int INVENTORY_TOP = 176;
 	private static final int FIRST_HOTBAR_SLOT = 1 + 27;
 
 	private final SimpleContainer ghost = new SimpleContainer(1);
