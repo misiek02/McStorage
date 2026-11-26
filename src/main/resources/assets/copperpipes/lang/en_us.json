@@ -52,5 +52,6 @@
   "direction.copperpipes.west": "west",
   "direction.copperpipes.up": "up",
   "direction.copperpipes.down": "down",
+  "commands.copperpipes.config": "Pipe item rendering: render=%s, distance=%s blocks (max 96), max=%s items. Change with /cpconfig distance|max|render",
   "itemGroup.copperpipes.main": "Copper Pipes"
 }

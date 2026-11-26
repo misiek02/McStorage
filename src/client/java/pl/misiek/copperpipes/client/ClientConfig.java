@@ -12,10 +12,13 @@ import pl.misiek.copperpipes.CopperPipes;
 
 /**
  * Client-only visual settings, stored in {@code config/copperpipes-client.json}. Missing or broken files are
- * replaced with defaults. Edit the file and restart the game to apply.
+ * replaced with defaults. Change it in game with /cpconfig, or edit the file and restart the game.
  */
 public final class ClientConfig {
 	private static final Path FILE = FabricLoader.getInstance().getConfigDir().resolve("copperpipes-client.json");
+	/** The server only sends items to players within this range of the outlet, so drawing further is pointless. */
+	public static final int MAX_RENDER_DISTANCE = 96;
+	public static final int MAX_VISIBLE_ITEMS = 10_000;
 	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
 	/** Show items flowing through pipes. */
@@ -41,12 +44,12 @@ public final class ClientConfig {
 			}
 		}
 		instance = loaded == null ? new ClientConfig() : loaded;
-		instance.renderDistance = Math.clamp(instance.renderDistance, 1, 256);
-		instance.maxVisibleItems = Math.clamp(instance.maxVisibleItems, 0, 10_000);
+		instance.renderDistance = Math.clamp(instance.renderDistance, 1, MAX_RENDER_DISTANCE);
+		instance.maxVisibleItems = Math.clamp(instance.maxVisibleItems, 0, MAX_VISIBLE_ITEMS);
 		save();
 	}
 
-	private static void save() {
+	public static void save() {
 		try {
 			Files.createDirectories(FILE.getParent());
 			try (Writer writer = Files.newBufferedWriter(FILE)) {

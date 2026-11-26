@@ -52,5 +52,6 @@
   "direction.copperpipes.west": "zachód",
   "direction.copperpipes.up": "góra",
   "direction.copperpipes.down": "dół",
+  "commands.copperpipes.config": "Renderowanie przedmiotów w rurach: render=%s, zasięg=%s bloków (max 96), max=%s przedmiotów. Zmiana: /cpconfig distance|max|render",
   "itemGroup.copperpipes.main": "Miedziane rury"
 }

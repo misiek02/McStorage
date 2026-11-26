@@ -15,5 +15,6 @@ public class CopperPipesClient implements ClientModInitializer {
 		ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> CardEditScreen.clearRegistryNames());
 		FlowingItems.init();
 		FpsCommand.register();
+		ConfigCommand.register();
 	}
 }
