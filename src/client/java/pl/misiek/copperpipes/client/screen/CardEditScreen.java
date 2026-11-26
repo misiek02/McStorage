@@ -44,6 +44,8 @@ public class CardEditScreen extends AbstractContainerScreen<CardEditMenu> {
 	private static final int PRIORITY_Y = CardEditMenu.GHOST_Y + 21;
 	private static final int MAX_SUGGESTIONS = 7;
 	private static final int SUGGESTION_HEIGHT = 11;
+	private static final int LEGEND_WIDTH = 150;
+	private static final int LEGEND_LINES = 9;
 
 	private static final int PANEL = 0xFFC6C6C6;
 	private static final int PANEL_LIGHT = 0xFFFFFFFF;
@@ -69,6 +71,7 @@ public class CardEditScreen extends AbstractContainerScreen<CardEditMenu> {
 	private int selectedSuggestion;
 	private ItemStack lastGhost = ItemStack.EMPTY;
 	private boolean updatingField;
+	private boolean legendOpen;
 
 	private static List<String> tagIds;
 	private static List<String> itemIds;
@@ -118,6 +121,10 @@ public class CardEditScreen extends AbstractContainerScreen<CardEditMenu> {
 			this.blacklist = !this.blacklist;
 			b.setMessage(modeLabel());
 		}).bounds(x + 102, y + PRIORITY_Y, 67, 14).build());
+
+		// "?" on the window edge opens a legend panel beside the window.
+		this.addRenderableWidget(Button.builder(Component.literal("?"), b -> this.legendOpen = !this.legendOpen)
+				.bounds(x + WIDTH + 2, y + 2, 14, 14).build());
 
 		this.field.setResponder(this::onFieldChanged);
 		this.setInitialFocus(this.field);
@@ -391,7 +398,7 @@ public class CardEditScreen extends AbstractContainerScreen<CardEditMenu> {
 		int my = ym - this.topPos;
 
 		if (this.rules.isEmpty()) {
-			graphics.text(this.font, Component.translatable("gui.copperpipes.card.no_rules"), LIST_X + 3, LIST_Y + 3, 0xFF606060, false);
+			graphics.textWithWordWrap(this.font, Component.translatable("gui.copperpipes.card.no_rules"), LIST_X + 3, LIST_Y + 3, WIDTH - 22, 0xFF606060, false);
 		}
 		for (int row = 0; row < VISIBLE_ROWS && this.scroll + row < this.rules.size(); row++) {
 			extractRule(graphics, this.rules.get(this.scroll + row), LIST_Y + row * ROW_HEIGHT, overRemove(mx, my, row));
@@ -440,6 +447,9 @@ public class CardEditScreen extends AbstractContainerScreen<CardEditMenu> {
 	@Override
 	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
 		super.extractRenderState(graphics, mouseX, mouseY, a);
+		if (this.legendOpen) {
+			extractLegend(graphics);
+		}
 		if (!suggestionsVisible()) {
 			return;
 		}
@@ -464,6 +474,30 @@ public class CardEditScreen extends AbstractContainerScreen<CardEditMenu> {
 		if (this.suggestions.size() > MAX_SUGGESTIONS) {
 			String count = (this.selectedSuggestion + 1) + "/" + this.suggestions.size();
 			graphics.text(this.font, count, x + WIDTH - 8 - this.font.width(count), top - 10, 0xFFFFFFFF, true);
+		}
+	}
+
+	/** Explains rule kinds, buttons and priority; drawn right of the window, or left when the screen is too narrow. */
+	private void extractLegend(GuiGraphicsExtractor graphics) {
+		int textWidth = LEGEND_WIDTH - 12;
+		List<Component> lines = new ArrayList<>();
+		for (int i = 1; i <= LEGEND_LINES; i++) {
+			lines.add(Component.translatable("gui.copperpipes.legend." + i));
+		}
+		int height = 22;
+		for (Component line : lines) {
+			height += this.font.wordWrapHeight(line, textWidth) + 3;
+		}
+		int x = this.leftPos + WIDTH + 18;
+		if (x + LEGEND_WIDTH > this.width) {
+			x = Math.max(0, this.leftPos - LEGEND_WIDTH - 2);
+		}
+		int y = this.topPos;
+		panel(graphics, x, y, LEGEND_WIDTH, height);
+		graphics.text(this.font, Component.translatable("gui.copperpipes.legend.title"), x + 6, y + 6, TEXT, false);
+		int lineY = y + 20;
+		for (Component line : lines) {
+			lineY = graphics.textWithWordWrap(this.font, line, x + 6, lineY, textWidth, TEXT, false) + 3;
 		}
 	}
 
