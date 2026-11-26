@@ -20,6 +20,8 @@ import pl.misiek.copperpipes.card.CardCopyRecipe;
 import pl.misiek.copperpipes.card.CardFilter;
 import pl.misiek.copperpipes.card.SortingCard;
 import pl.misiek.copperpipes.item.PipeWrenchItem;
+import pl.misiek.copperpipes.command.DemoBuilder;
+import pl.misiek.copperpipes.network.PipeNetworkManager;
 import pl.misiek.copperpipes.network.PipeNetworks;
 import pl.misiek.copperpipes.registry.ModBlocks;
 import pl.misiek.copperpipes.registry.ModComponents;
@@ -212,6 +214,18 @@ public class CopperPipesGameTests {
 		helper.assertTrue(PipeConnections.isConnected(helper.getLevel().getBlockState(helper.absolutePos(INLET_A)), Direction.NORTH),
 				"inlet A links back");
 		helper.succeed();
+	}
+
+	/** The demo's return pipes carry sorted items back to the input, so something must travel through them. */
+	@GameTest(maxTicks = 600, padding = 32)
+	public void demoItemsCirculate(GameTestHelper helper) {
+		BlockPos origin = helper.absolutePos(new BlockPos(0, 1, 0));
+		DemoBuilder.buildAt(helper.getLevel(), origin);
+		helper.succeedWhen(() -> {
+			PipeNetworkManager manager = PipeNetworks.get(helper.getLevel());
+			int returning = manager.itemsInTransitThrough(origin.offset(0, 0, -3)) + manager.itemsInTransitThrough(origin.offset(0, 0, 3));
+			helper.assertTrue(returning > 0, "items should flow back to the input through the return pipes");
+		});
 	}
 
 	// ---------------------------------------------------------------- card copy (milestone 8)
