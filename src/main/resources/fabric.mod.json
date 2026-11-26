@@ -7,7 +7,7 @@
 	"authors": [
 		"Michał Suski"
 	],
-	"license": "All-Rights-Reserved",
+	"license": "MIT",
 	"icon": "assets/copperpipes/icon.png",
 	"environment": "*",
 	"entrypoints": {
