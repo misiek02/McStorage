@@ -5,6 +5,7 @@ import net.minecraft.resources.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.misiek.copperpipes.network.PipeNetworks;
+import pl.misiek.copperpipes.packet.ItemFlowPayload;
 import pl.misiek.copperpipes.packet.UpdateCardPayload;
 import pl.misiek.copperpipes.registry.ModBlockEntities;
 import pl.misiek.copperpipes.registry.ModBlocks;
@@ -29,6 +30,7 @@ public class CopperPipes implements ModInitializer {
 		ModCreativeTab.init();
 		PipeNetworks.init();
 		UpdateCardPayload.register();
+		ItemFlowPayload.register();
 		LOGGER.info("Copper Pipes initialized");
 	}
 

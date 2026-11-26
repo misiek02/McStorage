@@ -24,6 +24,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import pl.misiek.copperpipes.block.ConnectorBlock;
 import pl.misiek.copperpipes.block.InletConnectorBlock;
 import pl.misiek.copperpipes.block.OutletConnectorBlock;
+import pl.misiek.copperpipes.packet.ItemFlowPayload;
 
 /**
  * All pipe networks of one level.
@@ -118,6 +119,7 @@ public final class PipeNetworkManager {
 				ItemStack sent = extract(source, target, variant);
 				if (!sent.isEmpty()) {
 					this.transit.add(new Transit(sent, route.inlet(), route.path(), now + route.travelTicks()));
+					ItemFlowPayload.sendAround(this.level, new ItemFlowPayload(sent, outlet, route.path(), route.times(), now));
 					return interval(route);
 				}
 			}

@@ -5,7 +5,8 @@ package pl.misiek.copperpipes.network;
  *
  * @param inlet       inlet connector position (BlockPos as long)
  * @param path        positions from the first block after the outlet up to and including the inlet
- * @param travelTicks how long an item takes to cover the path
+ * @param times       ticks after leaving the outlet at which an item reaches the centre of each {@code path} block
+ * @param travelTicks how long an item takes to cover the whole path
  */
-public record Route(long inlet, long[] path, int travelTicks) {
+public record Route(long inlet, long[] path, float[] times, int travelTicks) {
 }

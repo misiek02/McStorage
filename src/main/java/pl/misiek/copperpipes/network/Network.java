@@ -199,10 +199,12 @@ final class Network {
 				path.add(p);
 			}
 			long[] ordered = new long[path.size()];
+			float[] times = new float[ordered.length];
 			for (int i = 0; i < ordered.length; i++) {
 				ordered[i] = path.getLong(ordered.length - 1 - i);
+				times[i] = (float) cost.get(ordered[i]);
 			}
-			routes.add(new Route(inlet, ordered, (int) Math.ceil(cost.get(inlet))));
+			routes.add(new Route(inlet, ordered, times, (int) Math.ceil(cost.get(inlet))));
 		}
 		routes.sort(Comparator.comparingInt(Route::travelTicks));
 		return routes;
