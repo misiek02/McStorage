@@ -1,0 +1,8 @@
+{
+  "parent": "copperpipes:block/template_copper_pipe_item",
+  "textures": {
+    "frame": "copperpipes:block/exposed_copper_pipe_frame",
+    "glass": "copperpipes:block/copper_pipe_glass",
+    "particle": "minecraft:block/exposed_copper"
+  }
+}

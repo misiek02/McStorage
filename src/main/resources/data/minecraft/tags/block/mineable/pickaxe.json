@@ -1,5 +1,12 @@
 {
   "values": [
-    "copperpipes:copper_pipe"
+    "copperpipes:copper_pipe",
+    "copperpipes:exposed_copper_pipe",
+    "copperpipes:weathered_copper_pipe",
+    "copperpipes:oxidized_copper_pipe",
+    "copperpipes:waxed_copper_pipe",
+    "copperpipes:waxed_exposed_copper_pipe",
+    "copperpipes:waxed_weathered_copper_pipe",
+    "copperpipes:waxed_oxidized_copper_pipe"
   ]
 }

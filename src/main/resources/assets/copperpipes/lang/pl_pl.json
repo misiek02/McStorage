@@ -1,4 +1,11 @@
 {
   "block.copperpipes.copper_pipe": "Miedziana rura",
+  "block.copperpipes.exposed_copper_pipe": "Miedziana rura, naruszona",
+  "block.copperpipes.weathered_copper_pipe": "Miedziana rura, zwietrzała",
+  "block.copperpipes.oxidized_copper_pipe": "Miedziana rura, utleniona",
+  "block.copperpipes.waxed_copper_pipe": "Miedziana rura (woskowana)",
+  "block.copperpipes.waxed_exposed_copper_pipe": "Miedziana rura, naruszona (woskowana)",
+  "block.copperpipes.waxed_weathered_copper_pipe": "Miedziana rura, zwietrzała (woskowana)",
+  "block.copperpipes.waxed_oxidized_copper_pipe": "Miedziana rura, utleniona (woskowana)",
   "itemGroup.copperpipes.main": "Miedziane rury"
 }

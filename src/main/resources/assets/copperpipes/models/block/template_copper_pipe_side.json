@@ -1,0 +1,20 @@
+{
+  "parent": "minecraft:block/block",
+  "ambientocclusion": false,
+  "elements": [
+    {
+      "from": [4, 4, 4],
+      "to": [12, 12, 12],
+      "faces": {
+        "north": { "uv": [4, 4, 12, 12], "texture": "#frame" }
+      }
+    },
+    {
+      "from": [4.05, 4.05, 4.05],
+      "to": [11.95, 11.95, 11.95],
+      "faces": {
+        "north": { "uv": [4, 4, 12, 12], "texture": "#glass" }
+      }
+    }
+  ]
+}

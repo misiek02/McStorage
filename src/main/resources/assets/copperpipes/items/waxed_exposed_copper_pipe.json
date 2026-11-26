@@ -1,0 +1,6 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "copperpipes:block/exposed_copper_pipe_item"
+  }
+}

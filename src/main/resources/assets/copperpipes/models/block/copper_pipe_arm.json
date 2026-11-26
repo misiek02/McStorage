@@ -1,18 +1,8 @@
 {
+  "parent": "copperpipes:block/template_copper_pipe_arm",
   "textures": {
-    "particle": "copperpipes:block/copper_pipe",
-    "all": "copperpipes:block/copper_pipe"
-  },
-  "elements": [
-    {
-      "from": [4, 4, 0],
-      "to": [12, 12, 4],
-      "faces": {
-        "east":  { "uv": [12, 4, 16, 12], "texture": "#all" },
-        "west":  { "uv": [0, 4, 4, 12], "texture": "#all" },
-        "up":    { "uv": [4, 0, 12, 4], "texture": "#all" },
-        "down":  { "uv": [4, 12, 12, 16], "texture": "#all" }
-      }
-    }
-  ]
+    "frame": "copperpipes:block/copper_pipe_frame",
+    "glass": "copperpipes:block/copper_pipe_glass",
+    "particle": "minecraft:block/copper_block"
+  }
 }

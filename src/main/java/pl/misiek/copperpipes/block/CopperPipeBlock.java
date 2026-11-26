@@ -11,6 +11,7 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.PipeBlock;
+import net.minecraft.world.level.block.WeatheringCopper;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
@@ -19,7 +20,7 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 /**
- * A pipe segment. Plain block: no block entity and no ticking.
+ * A pipe segment. Plain block: no block entity and no ticking (waxed variants use this class directly).
  * Connections are stored in six boolean properties and updated only when a neighbour changes.
  */
 public class CopperPipeBlock extends Block {
@@ -28,16 +29,32 @@ public class CopperPipeBlock extends Block {
 	private static final VoxelShape CORE = Block.box(4, 4, 4, 12, 12, 12);
 	private static final Map<Direction, VoxelShape> ARMS = Shapes.rotateAll(Block.boxZ(8, 0, 4));
 
+	private final WeatheringCopper.WeatherState weatherState;
 	private final Function<BlockState, VoxelShape> shapes;
 
-	public CopperPipeBlock(Properties properties) {
+	public CopperPipeBlock(WeatheringCopper.WeatherState weatherState, Properties properties) {
 		super(properties);
+		this.weatherState = weatherState;
 		BlockState state = this.stateDefinition.any();
 		for (BooleanProperty property : PROPERTY_BY_DIRECTION.values()) {
 			state = state.setValue(property, false);
 		}
 		this.registerDefaultState(state);
 		this.shapes = this.getShapeForEachState(CopperPipeBlock::computeShape);
+	}
+
+	public WeatheringCopper.WeatherState getAge() {
+		return this.weatherState;
+	}
+
+	/** Item speed factor for this oxidation stage. */
+	public float speedMultiplier() {
+		return switch (this.weatherState) {
+			case UNAFFECTED -> 1.0F;
+			case EXPOSED -> 0.7F;
+			case WEATHERED -> 0.45F;
+			case OXIDIZED -> 0.25F;
+		};
 	}
 
 	private static VoxelShape computeShape(BlockState state) {

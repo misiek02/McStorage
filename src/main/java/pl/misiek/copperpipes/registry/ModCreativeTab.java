@@ -12,9 +12,9 @@ public final class ModCreativeTab {
 	public static final CreativeModeTab TAB = Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, CopperPipes.id("main"),
 			FabricCreativeModeTab.builder()
 					.title(Component.translatable("itemGroup.copperpipes.main"))
-					.icon(() -> new ItemStack(ModBlocks.COPPER_PIPE))
+					.icon(() -> new ItemStack(ModBlocks.COPPER_PIPE.weathering().unaffected()))
 					.displayItems((parameters, output) -> {
-						output.accept(ModBlocks.COPPER_PIPE);
+						ModBlocks.COPPER_PIPE.forEach(output::accept);
 					})
 					.build());
 
