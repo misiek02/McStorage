@@ -4,6 +4,8 @@ import net.fabricmc.api.ModInitializer;
 import net.minecraft.resources.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pl.misiek.copperpipes.registry.ModBlocks;
+import pl.misiek.copperpipes.registry.ModCreativeTab;
 
 public class CopperPipes implements ModInitializer {
 	public static final String MOD_ID = "copperpipes";
@@ -11,6 +13,8 @@ public class CopperPipes implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
+		ModBlocks.init();
+		ModCreativeTab.init();
 		LOGGER.info("Copper Pipes initialized");
 	}
 

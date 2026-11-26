@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "key": {
+    "C": "minecraft:copper_ingot",
+    "G": "minecraft:glass"
+  },
+  "pattern": [
+    "CCC",
+    "GGG",
+    "CCC"
+  ],
+  "result": {
+    "count": 8,
+    "id": "copperpipes:copper_pipe"
+  }
+}
