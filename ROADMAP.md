@@ -5,6 +5,11 @@ nothing here is final.
 
 ## 0.2.0 — Control and insight
 
+- [ ] **Fix: waterlogged pipes**: a pipe or connector placed in water removes the water from its block, so
+      there is a dry gap around the pipe. Pipes and connectors should be waterloggable like vanilla
+      copper grates (a `waterlogged` property, water stays around the pipe and keeps flowing). Items keep
+      moving through the pipe as before.
+
 - [ ] **Redstone control for outlets**: a powered outlet stops sending (like a hopper). It wakes again when
       the signal is removed.
 - [ ] **Comparator output on inlets**: signal strength from how full the container behind the inlet is.
