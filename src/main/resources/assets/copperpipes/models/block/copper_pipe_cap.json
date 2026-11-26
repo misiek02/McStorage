@@ -1,0 +1,7 @@
+{
+  "parent": "copperpipes:block/template_copper_pipe_cap",
+  "textures": {
+    "cap": "minecraft:block/copper_block",
+    "particle": "minecraft:block/copper_block"
+  }
+}
