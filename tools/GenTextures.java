@@ -22,6 +22,7 @@ public class GenTextures {
 		write(frame(0x86B98A, 0x56875A), "weathered_copper_pipe_frame");
 		write(frame(0x6FC3A4, 0x3F8A6E), "oxidized_copper_pipe_frame");
 		glass("copper_pipe_glass");
+		sortingCard();
 
 		// Connector body sides: frame + arrow. Models map "left" in the _h texture and "up" in the _v texture
 		// towards the attached container, so the inlet arrow points there and the outlet arrow points away.
@@ -99,6 +100,22 @@ public class GenTextures {
 			}
 		}
 		write(img, name);
+	}
+
+	/** Paper card with a copper stripe and a few "rule" lines. */
+	static void sortingCard() throws Exception {
+		BufferedImage img = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
+		for (int y = 3; y <= 12; y++) {
+			for (int x = 2; x <= 13; x++) {
+				int rgb = 0xEDE6D6;
+				if (x == 2 || y == 3 || x == 13 || y == 12) rgb = 0xA89F8A;
+				else if (y == 4 || y == 5) rgb = COPPER_LIGHT;
+				else if ((y == 7 || y == 9 || y == 11) && x >= 4 && x <= (y == 9 ? 9 : 11)) rgb = 0x6B6457;
+				img.setRGB(x, y, 0xFF000000 | rgb);
+			}
+		}
+		ImageIO.write(img, "png", new File(DIR.replace("block/", "item/") + "sorting_card.png"));
+		System.out.println("wrote sorting_card.png");
 	}
 
 	static void write(BufferedImage img, String name) throws Exception {

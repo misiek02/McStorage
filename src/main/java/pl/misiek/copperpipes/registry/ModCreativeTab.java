@@ -17,6 +17,7 @@ public final class ModCreativeTab {
 						ModBlocks.COPPER_PIPE.forEach(output::accept);
 						output.accept(ModBlocks.OUTLET_CONNECTOR);
 						output.accept(ModBlocks.INLET_CONNECTOR);
+						output.accept(ModItems.SORTING_CARD);
 					})
 					.build());
 

@@ -9,5 +9,11 @@
   "block.copperpipes.waxed_oxidized_copper_pipe": "Waxed Oxidized Copper Pipe",
   "block.copperpipes.outlet_connector": "Outlet Connector",
   "block.copperpipes.inlet_connector": "Inlet Connector",
+  "item.copperpipes.sorting_card": "Sorting Card",
+  "item.copperpipes.sorting_card.whitelist": "Mode: whitelist",
+  "item.copperpipes.sorting_card.blacklist": "Mode: blacklist",
+  "item.copperpipes.sorting_card.priority": "Priority: %s",
+  "item.copperpipes.sorting_card.no_rules": "No rules",
+  "block.copperpipes.inlet_connector.card_inserted": "Sorting card inserted",
   "itemGroup.copperpipes.main": "Copper Pipes"
 }

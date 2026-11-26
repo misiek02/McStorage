@@ -100,53 +100,54 @@ public final class PipeNetworkManager {
 			return 0;
 		}
 
-		List<Route> routes = networkAt(outletPos).routesFrom(this.level, outlet);
-		for (Route route : routes) {
-			BlockPos inletPos = BlockPos.of(route.inlet());
-			BlockState inletState = this.level.getBlockState(inletPos);
-			BlockPos targetPos = ConnectorBlock.targetPos(inletPos, inletState);
-			if (targetPos.equals(sourcePos) || !this.level.isLoaded(targetPos)) {
-				continue;
-			}
-			Storage<ItemVariant> target = ItemStorage.SIDED.find(this.level, targetPos, ConnectorBlock.targetSide(inletState));
-			if (target == null) {
-				continue;
-			}
-			ItemStack sent = extractAcceptedStack(source, target);
-			if (!sent.isEmpty()) {
-				this.transit.add(new Transit(sent, route.inlet(), route.path(), now + route.travelTicks()));
-				return interval(routes.getFirst());
+		Network network = networkAt(outletPos);
+		// Take the first item kind in the container that some allowed inlet has room for.
+		for (StorageView<ItemVariant> view : source.nonEmptyViews()) {
+			ItemVariant variant = view.getResource();
+			for (Route route : network.routesFor(this.level, outlet, variant.getItem())) {
+				BlockPos inletPos = BlockPos.of(route.inlet());
+				BlockState inletState = this.level.getBlockState(inletPos);
+				BlockPos targetPos = ConnectorBlock.targetPos(inletPos, inletState);
+				if (targetPos.equals(sourcePos) || !this.level.isLoaded(targetPos)) {
+					continue;
+				}
+				Storage<ItemVariant> target = ItemStorage.SIDED.find(this.level, targetPos, ConnectorBlock.targetSide(inletState));
+				if (target == null) {
+					continue;
+				}
+				ItemStack sent = extract(source, target, variant);
+				if (!sent.isEmpty()) {
+					this.transit.add(new Transit(sent, route.inlet(), route.path(), now + route.travelTicks()));
+					return interval(route);
+				}
 			}
 		}
 		return 0;
 	}
 
-	/** Extracts up to {@link #MAX_ITEMS} of the first item kind the target currently has room for. */
-	private static ItemStack extractAcceptedStack(Storage<ItemVariant> source, Storage<ItemVariant> target) {
-		for (StorageView<ItemVariant> view : source.nonEmptyViews()) {
-			ItemVariant variant = view.getResource();
-			long accepted;
-			try (Transaction simulation = Transaction.openOuter()) {
-				accepted = target.insert(variant, Math.min(MAX_ITEMS, variant.getItem().getDefaultMaxStackSize()), simulation);
-				// not committed: only a capacity check
-			}
-			if (accepted <= 0) {
-				continue;
-			}
-			try (Transaction transaction = Transaction.openOuter()) {
-				long extracted = source.extract(variant, accepted, transaction);
-				if (extracted > 0) {
-					transaction.commit();
-					return variant.toStack((int) extracted);
-				}
-			}
+	/** Extracts up to {@link #MAX_ITEMS} of {@code variant}, limited to what the target currently has room for. */
+	private static ItemStack extract(Storage<ItemVariant> source, Storage<ItemVariant> target, ItemVariant variant) {
+		long accepted;
+		try (Transaction simulation = Transaction.openOuter()) {
+			accepted = target.insert(variant, Math.min(MAX_ITEMS, variant.getItem().getDefaultMaxStackSize()), simulation);
+			// not committed: only a capacity check
 		}
-		return ItemStack.EMPTY;
+		if (accepted <= 0) {
+			return ItemStack.EMPTY;
+		}
+		try (Transaction transaction = Transaction.openOuter()) {
+			long extracted = source.extract(variant, accepted, transaction);
+			if (extracted <= 0) {
+				return ItemStack.EMPTY;
+			}
+			transaction.commit();
+			return variant.toStack((int) extracted);
+		}
 	}
 
-	/** Outlet interval: base interval scaled by the speed of the first block on its fastest route. */
-	private int interval(Route fastest) {
-		BlockState first = this.level.getBlockState(BlockPos.of(fastest.path()[0]));
+	/** Outlet interval: base interval scaled by the speed of the first block the item entered. */
+	private int interval(Route route) {
+		BlockState first = this.level.getBlockState(BlockPos.of(route.path()[0]));
 		return (int) Math.ceil(BASE_INTERVAL / Network.speedOf(first));
 	}
 
@@ -160,9 +161,9 @@ public final class PipeNetworkManager {
 		}
 		ItemStack left = insertInto(inletPos, inletState, item.stack());
 		if (!left.isEmpty()) {
-			// The inlet filled up while the item was travelling: try the network's other inlets right away.
+			// The inlet filled up while the item was travelling: try the other inlets allowed for it, right away.
 			Network network = networkAt(inletPos);
-			for (long other : network.inlets) {
+			for (long other : network.inletsFor(left.getItem())) {
 				if (left.isEmpty()) {
 					break;
 				}
@@ -278,6 +279,13 @@ public final class PipeNetworkManager {
 		onNodeChanged(pos);
 	}
 
+	/** Tags may have changed (datapack reload): recompile all filters on next use. */
+	public void discardAll() {
+		for (Network network : Set.copyOf(this.networkByNode.values())) {
+			discard(network);
+		}
+	}
+
 	public void onChunkChanged(long chunk) {
 		Set<Network> networks = this.networksByChunk.get(chunk);
 		if (networks != null) {
@@ -343,11 +351,12 @@ public final class PipeNetworkManager {
 
 	// ---- for tests / debugging ----
 
-	public int itemsInTransit() {
-		return this.transit.size();
+	public int itemsInTransitThrough(BlockPos pos) {
+		long p = pos.asLong();
+		return (int) this.transit.stream().filter(item -> item.passesThrough(p)).count();
 	}
 
-	public int awakeOutlets() {
-		return this.activeOutlets.size();
+	public boolean isOutletAwake(BlockPos outlet) {
+		return this.activeOutlets.containsKey(outlet.asLong());
 	}
 }

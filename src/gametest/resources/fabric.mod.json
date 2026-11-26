@@ -1,0 +1,15 @@
+{
+	"schemaVersion": 1,
+	"id": "copperpipes-gametest",
+	"version": "1.0.0",
+	"name": "Copper Pipes gametests",
+	"environment": "*",
+	"entrypoints": {
+		"fabric-gametest": [
+			"pl.misiek.copperpipes.test.CopperPipesGameTests"
+		]
+	},
+	"depends": {
+		"copperpipes": "*"
+	}
+}

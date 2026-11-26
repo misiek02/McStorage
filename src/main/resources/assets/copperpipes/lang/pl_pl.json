@@ -9,5 +9,11 @@
   "block.copperpipes.waxed_oxidized_copper_pipe": "Miedziana rura, utleniona (woskowana)",
   "block.copperpipes.outlet_connector": "Konektor wyjściowy",
   "block.copperpipes.inlet_connector": "Konektor wejściowy",
+  "item.copperpipes.sorting_card": "Karta sortująca",
+  "item.copperpipes.sorting_card.whitelist": "Tryb: biała lista",
+  "item.copperpipes.sorting_card.blacklist": "Tryb: czarna lista",
+  "item.copperpipes.sorting_card.priority": "Priorytet: %s",
+  "item.copperpipes.sorting_card.no_rules": "Brak reguł",
+  "block.copperpipes.inlet_connector.card_inserted": "Włożono kartę sortującą",
   "itemGroup.copperpipes.main": "Miedziane rury"
 }

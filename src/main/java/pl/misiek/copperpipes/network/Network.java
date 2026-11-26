@@ -8,13 +8,15 @@ import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.level.ChunkPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import pl.misiek.copperpipes.block.ConnectorBlock;
@@ -22,6 +24,8 @@ import pl.misiek.copperpipes.block.CopperPipeBlock;
 import pl.misiek.copperpipes.block.InletConnectorBlock;
 import pl.misiek.copperpipes.block.OutletConnectorBlock;
 import pl.misiek.copperpipes.block.PipeConnections;
+import pl.misiek.copperpipes.block.entity.InletBlockEntity;
+import pl.misiek.copperpipes.card.CardFilter;
 
 /**
  * One connected group of pipes and connectors. Built once by BFS and thrown away (not patched) when any of its
@@ -38,6 +42,12 @@ final class Network {
 	/** Chunks holding nodes, plus unloaded chunks the walk stopped at; a load/unload there invalidates us. */
 	final LongOpenHashSet chunks = new LongOpenHashSet();
 	private final Long2ObjectOpenHashMap<List<Route>> routesByOutlet = new Long2ObjectOpenHashMap<>();
+	/** Compiled card per filtered inlet; inlets without a card are overflow and absent here. */
+	private final Long2ObjectOpenHashMap<CardFilter> filters = new Long2ObjectOpenHashMap<>();
+	/** Item -> inlets that may receive it: matching filtered inlets by priority (highest first), then overflow inlets. */
+	private final Map<Item, long[]> inletsByItem = new HashMap<>();
+	/** Outlet -> item -> routes to the inlets above, in that preference order (nearest first within a priority). */
+	private final Long2ObjectOpenHashMap<Map<Item, List<Route>>> routesByOutletAndItem = new Long2ObjectOpenHashMap<>();
 
 	static boolean isNode(BlockState state) {
 		return state.getBlock() instanceof CopperPipeBlock || state.getBlock() instanceof ConnectorBlock;
@@ -83,7 +93,56 @@ final class Network {
 			this.outlets.add(pos);
 		} else if (state.getBlock() instanceof InletConnectorBlock) {
 			this.inlets.add(pos);
+			if (level.getBlockEntity(BlockPos.of(pos)) instanceof InletBlockEntity inlet) {
+				CardFilter filter = inlet.compileFilter();
+				if (filter != null) {
+					this.filters.put(pos, filter);
+				}
+			}
 		}
+	}
+
+	/** Inlets allowed to receive {@code item}, in preference order. Tags were expanded when the filters were compiled. */
+	long[] inletsFor(Item item) {
+		return this.inletsByItem.computeIfAbsent(item, this::computeInletsFor);
+	}
+
+	private long[] computeInletsFor(Item item) {
+		LongArrayList matched = new LongArrayList();
+		LongArrayList overflow = new LongArrayList();
+		for (long inlet : this.inlets) {
+			CardFilter filter = this.filters.get(inlet);
+			if (filter == null) {
+				overflow.add(inlet);
+			} else if (filter.matches(item)) {
+				matched.add(inlet);
+			}
+		}
+		matched.sort((a, b) -> Integer.compare(this.filters.get(b).priority(), this.filters.get(a).priority()));
+		matched.addAll(overflow);
+		return matched.toLongArray();
+	}
+
+	/** Priority of an inlet for ordering; overflow inlets come after every filtered one. */
+	private int priorityOf(long inlet) {
+		CardFilter filter = this.filters.get(inlet);
+		return filter == null ? -1 : filter.priority();
+	}
+
+	/** Routes from an outlet for one item: allowed inlets only, highest priority first, nearest first within a priority. */
+	List<Route> routesFor(ServerLevel level, long outlet, Item item) {
+		return this.routesByOutletAndItem.computeIfAbsent(outlet, o -> new HashMap<>()).computeIfAbsent(item, i -> {
+			LongOpenHashSet allowed = new LongOpenHashSet(inletsFor(i));
+			List<Route> routes = new ArrayList<>();
+			for (Route route : routesFrom(level, outlet)) {
+				if (allowed.contains(route.inlet())) {
+					routes.add(route);
+				}
+			}
+			// Stable sort: routes are already nearest-first, so that order survives within one priority.
+			routes.sort(Comparator.comparingInt((Route r) -> priorityOf(r.inlet())).reversed());
+			return routes;
+		});
 	}
 
 	/** Routes from an outlet to every reachable inlet, fastest first. */

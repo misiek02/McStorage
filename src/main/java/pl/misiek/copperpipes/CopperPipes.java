@@ -7,7 +7,9 @@ import org.slf4j.LoggerFactory;
 import pl.misiek.copperpipes.network.PipeNetworks;
 import pl.misiek.copperpipes.registry.ModBlockEntities;
 import pl.misiek.copperpipes.registry.ModBlocks;
+import pl.misiek.copperpipes.registry.ModComponents;
 import pl.misiek.copperpipes.registry.ModCreativeTab;
+import pl.misiek.copperpipes.registry.ModItems;
 
 public class CopperPipes implements ModInitializer {
 	public static final String MOD_ID = "copperpipes";
@@ -15,7 +17,9 @@ public class CopperPipes implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
+		ModComponents.init();
 		ModBlocks.init();
+		ModItems.init();
 		ModBlockEntities.init();
 		ModCreativeTab.init();
 		PipeNetworks.init();

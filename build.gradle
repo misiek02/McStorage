@@ -22,6 +22,17 @@ loom {
 	}
 }
 
+fabricApi {
+	configureTests {
+		createSourceSet = true
+		modId = "copperpipes-gametest"
+		enableGameTests = true
+		enableClientGameTests = false
+		// The user accepted the Minecraft EULA for local gametest runs (2026-11-26).
+		eula = true
+	}
+}
+
 dependencies {
 	// To change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"

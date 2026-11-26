@@ -44,6 +44,7 @@ public final class PipeNetworks {
 		ServerChunkEvents.CHUNK_LOAD.register((level, chunk, generated) -> chunkChanged(level, chunk.getPos().pack()));
 		ServerChunkEvents.CHUNK_UNLOAD.register((level, chunk) -> chunkChanged(level, chunk.getPos().pack()));
 
+		ServerLifecycleEvents.END_DATA_PACK_RELOAD.register((server, resourceManager, success) -> MANAGERS.values().forEach(PipeNetworkManager::discardAll));
 		ServerLifecycleEvents.SERVER_STOPPING.register(server -> MANAGERS.values().forEach(PipeNetworkManager::flush));
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> MANAGERS.clear());
 	}
