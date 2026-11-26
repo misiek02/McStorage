@@ -15,8 +15,8 @@ public final class ModCreativeTab {
 					.icon(() -> new ItemStack(ModBlocks.COPPER_PIPE.weathering().unaffected()))
 					.displayItems((parameters, output) -> {
 						ModBlocks.COPPER_PIPE.forEach(output::accept);
-						output.accept(ModBlocks.INLET_CONNECTOR);
 						output.accept(ModBlocks.OUTLET_CONNECTOR);
+						output.accept(ModBlocks.INLET_CONNECTOR);
 					})
 					.build());
 

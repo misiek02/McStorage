@@ -1,7 +1,9 @@
 {
   "parent": "copperpipes:block/template_connector",
   "textures": {
-    "side": "minecraft:block/cut_copper",
-    "face": "copperpipes:block/outlet_connector_face"
+    "flange": "minecraft:block/cut_copper",
+    "arrow_h": "copperpipes:block/outlet_connector_arrow_h",
+    "arrow_v": "copperpipes:block/outlet_connector_arrow_v",
+    "glass": "copperpipes:block/copper_pipe_glass"
   }
 }

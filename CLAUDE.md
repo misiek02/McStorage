@@ -18,9 +18,9 @@ Blocks
 - `copper_pipe` (+ exposed, weathered, oxidized, and waxed variants): copper frame + glass walls,
   auto-connects to pipes and connectors in 6 directions (multipart blockstate). No block entity, no ticking.
   Oxidation stage = speed multiplier (1.0 / 0.7 / 0.45 / 0.25). Axe scrapes, honeycomb waxes (vanilla behaviour).
-- `inlet_connector`: attached to a container face, pulls items from it into the network.
-- `outlet_connector`: inserts into the attached container. Has 1 slot for a Sorting Card (does not use chest slots).
-  Outlet without a card = overflow.
+- `outlet_connector`: attached to a container face, pulls items from it into the network.
+- `inlet_connector`: inserts into the attached container. Has 1 slot for a Sorting Card (does not use chest slots).
+  Inlet without a card = overflow.
 Items
 - `sorting_card`: data component with list of rules + priority (0–9) + mode (whitelist/blacklist).
   Rule syntax: `#namespace:tag`, `namespace:item`, `@modid`, `!rule` (exclude).
@@ -30,9 +30,9 @@ Items
 
 ## Performance rules (hard requirements)
 - Network graph is rebuilt via BFS only when a pipe/connector is placed/removed (mark dirty, rebuild lazily).
-- Compile card rules into a cache `Item -> outlets sorted by priority`; expand tags at build time only.
-- Paths (inlet -> outlet) computed once per rebuild and cached.
-- Inlets tick ONLY when active; wake on container change; sleep when empty. Move up to N items every X ticks (X depends on oxidation).
+- Compile card rules into a cache `Item -> inlets sorted by priority`; expand tags at build time only.
+- Paths (outlet -> inlet) computed once per rebuild and cached.
+- Outlets tick ONLY when active; wake on container change; sleep when empty. Move up to N items every X ticks (X depends on oxidation).
 - Items in transit: server-side queue sorted by arrival tick; check only the head each tick (O(1)).
   On pipe break, drop in-transit items.
 - Use Fabric Transfer API (`ItemStorage.SIDED`) for all container access, so modded chests work.
@@ -44,9 +44,9 @@ Items
 2. `copper_pipe` block with item, texture, creative tab, recipe.
 3. Auto-connection (multipart blockstate, 6 directions).
 4. Frame + glass model, translucent render layer, oxidation + waxing variants.
-5. Inlet/outlet connectors with block entities, moving items without filters.
+5. Outlet/inlet connectors with block entities, moving items without filters.
 6. Network manager: BFS, path cache, transit queue, dropping items on break.
-7. Sorting card: data component, rule parser + matcher, outlet slot, priority, overflow.
+7. Sorting card: data component, rule parser + matcher, inlet slot, priority, overflow.
 8. Card edit GUI + networking, copy recipe.
 9. Client renderer for flowing items + config.
 10. Pipe wrench, polish, lang files (en_us + pl_pl).

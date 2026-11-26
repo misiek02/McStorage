@@ -8,7 +8,7 @@
     "copperpipes:waxed_exposed_copper_pipe",
     "copperpipes:waxed_weathered_copper_pipe",
     "copperpipes:waxed_oxidized_copper_pipe",
-    "copperpipes:inlet_connector",
-    "copperpipes:outlet_connector"
+    "copperpipes:outlet_connector",
+    "copperpipes:inlet_connector"
   ]
 }

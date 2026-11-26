@@ -15,8 +15,8 @@ import net.minecraft.world.level.block.WeatheringCopperCollection;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import pl.misiek.copperpipes.CopperPipes;
 import pl.misiek.copperpipes.block.CopperPipeBlock;
-import pl.misiek.copperpipes.block.InletConnectorBlock;
 import pl.misiek.copperpipes.block.OutletConnectorBlock;
+import pl.misiek.copperpipes.block.InletConnectorBlock;
 import pl.misiek.copperpipes.block.WeatheringCopperPipeBlock;
 
 public final class ModBlocks {
@@ -35,8 +35,8 @@ public final class ModBlocks {
 					.isRedstoneConductor((s, level, pos) -> false)
 					.isSuffocating((s, level, pos) -> false));
 
-	public static final Block INLET_CONNECTOR = register("inlet_connector", InletConnectorBlock::new, connectorProperties());
 	public static final Block OUTLET_CONNECTOR = register("outlet_connector", OutletConnectorBlock::new, connectorProperties());
+	public static final Block INLET_CONNECTOR = register("inlet_connector", InletConnectorBlock::new, connectorProperties());
 
 	private ModBlocks() {
 	}

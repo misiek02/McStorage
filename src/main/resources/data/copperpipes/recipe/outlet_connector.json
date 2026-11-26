@@ -3,7 +3,7 @@
   "category": "redstone",
   "ingredients": [
     "#copperpipes:copper_pipes",
-    "minecraft:dropper"
+    "minecraft:hopper"
   ],
   "result": {
     "id": "copperpipes:outlet_connector"

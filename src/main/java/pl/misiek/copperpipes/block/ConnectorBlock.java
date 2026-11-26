@@ -21,7 +21,7 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 /**
- * Base for inlet/outlet connectors. FACING points at the attached container; the other five sides link to pipes
+ * Base for outlet/inlet connectors. FACING points at the attached container; the other five sides link to pipes
  * the same way a pipe does.
  */
 public abstract class ConnectorBlock extends Block implements EntityBlock {
@@ -29,7 +29,7 @@ public abstract class ConnectorBlock extends Block implements EntityBlock {
 
 	/** Flange against the container plus the body up to the centre, for a connector facing north. */
 	private static final Map<Direction, VoxelShape> BASE = Shapes.rotateAll(
-			Shapes.or(Block.box(2, 2, 0, 14, 14, 3), Block.box(4, 4, 3, 12, 12, 12)));
+			Shapes.or(Block.box(2, 2, 0, 14, 14, 2), Block.box(4, 4, 2, 12, 12, 12)));
 
 	private final Function<BlockState, VoxelShape> shapes;
 

@@ -7,7 +7,7 @@
   "block.copperpipes.waxed_exposed_copper_pipe": "Waxed Exposed Copper Pipe",
   "block.copperpipes.waxed_weathered_copper_pipe": "Waxed Weathered Copper Pipe",
   "block.copperpipes.waxed_oxidized_copper_pipe": "Waxed Oxidized Copper Pipe",
-  "block.copperpipes.inlet_connector": "Inlet Connector",
   "block.copperpipes.outlet_connector": "Outlet Connector",
+  "block.copperpipes.inlet_connector": "Inlet Connector",
   "itemGroup.copperpipes.main": "Copper Pipes"
 }

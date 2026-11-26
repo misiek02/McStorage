@@ -1,30 +1,40 @@
 {
   "parent": "minecraft:block/block",
+  "ambientocclusion": false,
   "textures": {
-    "particle": "#side"
+    "particle": "#flange"
   },
   "elements": [
     {
-      "from": [2, 2, 0],
-      "to": [14, 14, 3],
+      "from": [2, 2, -1],
+      "to": [14, 14, 2],
       "faces": {
-        "north": { "uv": [2, 2, 14, 14], "texture": "#side" },
-        "south": { "uv": [2, 2, 14, 14], "texture": "#face" },
-        "east":  { "uv": [0, 2, 3, 14], "texture": "#side" },
-        "west":  { "uv": [0, 2, 3, 14], "texture": "#side" },
-        "up":    { "uv": [2, 0, 14, 3], "texture": "#side" },
-        "down":  { "uv": [2, 0, 14, 3], "texture": "#side" }
+        "north": { "uv": [2, 2, 14, 14], "texture": "#flange" },
+        "south": { "uv": [2, 2, 14, 14], "texture": "#flange" },
+        "east":  { "uv": [0, 2, 3, 14], "texture": "#flange" },
+        "west":  { "uv": [0, 2, 3, 14], "texture": "#flange" },
+        "up":    { "uv": [2, 0, 14, 3], "texture": "#flange" },
+        "down":  { "uv": [2, 0, 14, 3], "texture": "#flange" }
       }
     },
     {
-      "from": [4, 4, 3],
+      "from": [4, 4, 2],
       "to": [12, 12, 12],
       "faces": {
-        "south": { "uv": [4, 4, 12, 12], "texture": "#side" },
-        "east":  { "uv": [3, 4, 12, 12], "texture": "#side" },
-        "west":  { "uv": [3, 4, 12, 12], "texture": "#side" },
-        "up":    { "uv": [4, 3, 12, 12], "texture": "#side" },
-        "down":  { "uv": [4, 3, 12, 12], "texture": "#side" }
+        "east":  { "uv": [13, 4, 3, 12], "texture": "#arrow_h" },
+        "west":  { "uv": [3, 4, 13, 12], "texture": "#arrow_h" },
+        "up":    { "uv": [4, 3, 12, 13], "texture": "#arrow_v" },
+        "down":  { "uv": [4, 13, 12, 3], "texture": "#arrow_v" }
+      }
+    },
+    {
+      "from": [4.05, 4.05, 2],
+      "to": [11.95, 11.95, 11.95],
+      "faces": {
+        "east":  { "uv": [4, 4, 12, 12], "texture": "#glass" },
+        "west":  { "uv": [4, 4, 12, 12], "texture": "#glass" },
+        "up":    { "uv": [4, 4, 12, 12], "texture": "#glass" },
+        "down":  { "uv": [4, 4, 12, 12], "texture": "#glass" }
       }
     }
   ]
