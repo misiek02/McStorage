@@ -56,3 +56,23 @@ publishing {
 		}
 	}
 }
+
+// `.\gradlew installMod` builds the jar and copies it into a local launcher profile (e.g. Modrinth App).
+// The target folder is set per machine in local.properties (not committed): mods_dir=C:/path/to/profile/mods
+def localProps = new Properties()
+def localPropsFile = file("local.properties")
+if (localPropsFile.exists()) localPropsFile.withInputStream { localProps.load(it) }
+def modsDir = localProps.getProperty("mods_dir")
+
+tasks.register("installMod", Copy) {
+	group = "copperpipes"
+	description = "Copies the built mod jar into mods_dir from local.properties"
+	onlyIf("mods_dir is set in local.properties") { modsDir != null }
+	from(tasks.named("jar"))
+	into(modsDir ?: layout.buildDirectory.dir("noModsDir"))
+	def target = modsDir
+	doFirst {
+		// Remove older builds of this mod so the launcher does not load two versions.
+		new File(target).listFiles()?.findAll { it.name.startsWith("copperpipes-") && it.name.endsWith(".jar") }*.delete()
+	}
+}
