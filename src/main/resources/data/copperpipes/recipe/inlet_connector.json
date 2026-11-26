@@ -1,9 +1,13 @@
 {
-  "type": "minecraft:crafting_shapeless",
+  "type": "minecraft:crafting_shaped",
   "category": "redstone",
-  "ingredients": [
-    "#copperpipes:copper_pipes",
-    "minecraft:dropper"
+  "key": {
+    "H": "minecraft:hopper",
+    "P": "#copperpipes:copper_pipes"
+  },
+  "pattern": [
+    "P",
+    "H"
   ],
   "result": {
     "id": "copperpipes:inlet_connector"

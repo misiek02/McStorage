@@ -3,9 +3,11 @@ package pl.misiek.copperpipes.block;
 import java.util.function.Function;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.Block;
@@ -15,6 +17,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import pl.misiek.copperpipes.network.PipeNetworks;
 
 /**
  * A pipe segment. Plain block: no block entity and no ticking (waxed variants use this class directly).
@@ -60,6 +63,20 @@ public class CopperPipeBlock extends Block {
 	@Override
 	public BlockState getStateForPlacement(BlockPlaceContext context) {
 		return PipeConnections.withConnections(context.getLevel(), context.getClickedPos(), this.defaultBlockState());
+	}
+
+	@Override
+	protected void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean movedByPiston) {
+		super.onPlace(state, level, pos, oldState, movedByPiston);
+		if (level instanceof ServerLevel serverLevel) {
+			PipeNetworks.get(serverLevel).onNodeChanged(pos);
+		}
+	}
+
+	@Override
+	protected void affectNeighborsAfterRemoval(BlockState state, ServerLevel level, BlockPos pos, boolean movedByPiston) {
+		super.affectNeighborsAfterRemoval(state, level, pos, movedByPiston);
+		PipeNetworks.nodeRemovedOrReplaced(level, pos);
 	}
 
 	@Override

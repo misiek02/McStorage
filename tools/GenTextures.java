@@ -55,11 +55,11 @@ public class GenTextures {
 			img.setRGB(x, 11, 0xFF000000 | COPPER_DARK);
 		}
 		int arrow = 0xFF000000 | ARROW;
-		img.setRGB(4, 7, arrow);
-		img.setRGB(4, 8, arrow);
-		for (int y = 6; y <= 9; y++) img.setRGB(5, y, arrow);
-		for (int y = 5; y <= 10; y++) img.setRGB(6, y, arrow);
-		for (int x = 7; x <= 11; x++) {
+		// Small 4x4 arrow centred on the face.
+		img.setRGB(6, 7, arrow);
+		img.setRGB(6, 8, arrow);
+		for (int y = 6; y <= 9; y++) img.setRGB(7, y, arrow);
+		for (int x = 8; x <= 9; x++) {
 			img.setRGB(x, 7, arrow);
 			img.setRGB(x, 8, arrow);
 		}

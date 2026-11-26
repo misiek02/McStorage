@@ -4,6 +4,7 @@ import net.fabricmc.api.ModInitializer;
 import net.minecraft.resources.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pl.misiek.copperpipes.network.PipeNetworks;
 import pl.misiek.copperpipes.registry.ModBlockEntities;
 import pl.misiek.copperpipes.registry.ModBlocks;
 import pl.misiek.copperpipes.registry.ModCreativeTab;
@@ -17,6 +18,7 @@ public class CopperPipes implements ModInitializer {
 		ModBlocks.init();
 		ModBlockEntities.init();
 		ModCreativeTab.init();
+		PipeNetworks.init();
 		LOGGER.info("Copper Pipes initialized");
 	}
 

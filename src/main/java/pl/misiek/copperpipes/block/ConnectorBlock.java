@@ -4,9 +4,11 @@ import java.util.Map;
 import java.util.function.Function;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.Block;
@@ -19,6 +21,7 @@ import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import pl.misiek.copperpipes.network.PipeNetworks;
 
 /**
  * Base for outlet/inlet connectors. FACING points at the attached container; the other five sides link to pipes
@@ -54,6 +57,21 @@ public abstract class ConnectorBlock extends Block implements EntityBlock {
 		// Face the block that was clicked: the container this connector is attached to.
 		BlockState state = this.defaultBlockState().setValue(FACING, context.getClickedFace().getOpposite());
 		return PipeConnections.withConnections(context.getLevel(), context.getClickedPos(), state);
+	}
+
+	@Override
+	protected void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean movedByPiston) {
+		super.onPlace(state, level, pos, oldState, movedByPiston);
+		if (level instanceof ServerLevel serverLevel) {
+			PipeNetworks.get(serverLevel).onNodeChanged(pos);
+			PipeNetworks.get(serverLevel).registerConnector(pos, state);
+		}
+	}
+
+	@Override
+	protected void affectNeighborsAfterRemoval(BlockState state, ServerLevel level, BlockPos pos, boolean movedByPiston) {
+		super.affectNeighborsAfterRemoval(state, level, pos, movedByPiston);
+		PipeNetworks.nodeRemovedOrReplaced(level, pos);
 	}
 
 	@Override
