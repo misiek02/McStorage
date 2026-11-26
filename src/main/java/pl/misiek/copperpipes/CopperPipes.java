@@ -4,6 +4,7 @@ import net.fabricmc.api.ModInitializer;
 import net.minecraft.resources.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pl.misiek.copperpipes.command.CopperPipesCommand;
 import pl.misiek.copperpipes.network.PipeNetworks;
 import pl.misiek.copperpipes.packet.ItemFlowPayload;
 import pl.misiek.copperpipes.packet.UpdateCardPayload;
@@ -31,6 +32,7 @@ public class CopperPipes implements ModInitializer {
 		PipeNetworks.init();
 		UpdateCardPayload.register();
 		ItemFlowPayload.register();
+		CopperPipesCommand.register();
 		LOGGER.info("Copper Pipes initialized");
 	}
 

@@ -39,5 +39,9 @@
   "gui.copperpipes.legend.7": "Blacklist flips the card: everything except its rules.",
   "gui.copperpipes.legend.8": "An inlet without a card takes whatever is left (overflow).",
   "gui.copperpipes.legend.9": "Click an item into the grey slot to see its tags.",
+  "commands.copperpipes.stats": "Copper Pipes in this dimension: %s ms/tick avg, %s ms max (server total %s ms/tick); %s networks, %s awake outlets, %s stacks in transit",
+  "commands.copperpipes.stress": "Built %s test rigs with %s pipes each (%s outlets); items now circulate between the barrels",
+  "commands.copperpipes.fps.start": "Measuring FPS for %s s...",
+  "commands.copperpipes.fps.result": "FPS: avg %s, min %s, max %s; up to %s pipe items animated",
   "itemGroup.copperpipes.main": "Copper Pipes"
 }

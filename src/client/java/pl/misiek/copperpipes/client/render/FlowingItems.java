@@ -44,6 +44,11 @@ public final class FlowingItems {
 		ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> ITEMS.clear());
 	}
 
+	/** Items currently being animated (for /cpfps). */
+	public static int count() {
+		return ITEMS.size();
+	}
+
 	private static void add(Minecraft client, ItemFlowPayload payload) {
 		if (!ClientConfig.get().renderItems || client.level == null || payload.path().length == 0) {
 			return;

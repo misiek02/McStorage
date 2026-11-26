@@ -39,5 +39,9 @@
   "gui.copperpipes.legend.7": "Czarna lista odwraca kartę: wszystko oprócz jej reguł.",
   "gui.copperpipes.legend.8": "Wejście bez karty przyjmuje resztę (overflow).",
   "gui.copperpipes.legend.9": "Kliknij przedmiotem w szare pole, by zobaczyć jego tagi.",
+  "commands.copperpipes.stats": "Miedziane rury w tym wymiarze: średnio %s ms/tick, max %s ms (cały serwer %s ms/tick); sieci: %s, aktywne wyjścia: %s, paczki w drodze: %s",
+  "commands.copperpipes.stress": "Zbudowano %s stanowisk testowych po %s rur (%s wyjść); przedmioty krążą teraz między beczkami",
+  "commands.copperpipes.fps.start": "Mierzę FPS przez %s s...",
+  "commands.copperpipes.fps.result": "FPS: średnio %s, min %s, max %s; animowanych przedmiotów w rurach: do %s",
   "itemGroup.copperpipes.main": "Miedziane rury"
 }

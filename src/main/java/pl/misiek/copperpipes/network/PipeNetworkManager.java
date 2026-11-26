@@ -42,6 +42,7 @@ public final class PipeNetworkManager {
 	/** Items moved per outlet operation (one stack, one transit). */
 	static final int MAX_ITEMS = 16;
 	private static final int UNLOADED_RETRY_TICKS = 20;
+	private static final int TIMING_WINDOW = 100;
 
 	private final ServerLevel level;
 	private final Long2ObjectOpenHashMap<Network> networkByNode = new Long2ObjectOpenHashMap<>();
@@ -53,6 +54,9 @@ public final class PipeNetworkManager {
 	/** Awake outlets -> game tick of their next operation. */
 	private final Long2LongOpenHashMap activeOutlets = new Long2LongOpenHashMap();
 	private final PriorityQueue<Transit> transit = new PriorityQueue<>(Comparator.comparingLong(Transit::arrivalTick));
+	/** Nanoseconds spent in {@link #tick()} over the last {@link #TIMING_WINDOW} ticks, for /copperpipes stats. */
+	private final long[] tickNanos = new long[TIMING_WINDOW];
+	private int tickIndex;
 
 	PipeNetworkManager(ServerLevel level) {
 		this.level = level;
@@ -61,6 +65,13 @@ public final class PipeNetworkManager {
 	// ---- ticking ----
 
 	void tick() {
+		long start = System.nanoTime();
+		tickWork();
+		this.tickNanos[this.tickIndex] = System.nanoTime() - start;
+		this.tickIndex = (this.tickIndex + 1) % TIMING_WINDOW;
+	}
+
+	private void tickWork() {
 		long now = this.level.getGameTime();
 		while (!this.transit.isEmpty() && this.transit.peek().arrivalTick() <= now) {
 			deliver(this.transit.poll(), now);
@@ -352,6 +363,29 @@ public final class PipeNetworkManager {
 	}
 
 	// ---- for tests / debugging ----
+
+	public int itemsInTransit() {
+		return this.transit.size();
+	}
+
+	public int awakeOutletCount() {
+		return this.activeOutlets.size();
+	}
+
+	public int networkCount() {
+		return (int) this.networkByNode.values().stream().distinct().count();
+	}
+
+	/** Average and maximum time spent per tick over the last 100 ticks, in nanoseconds. */
+	public long[] tickTimeNanos() {
+		long sum = 0;
+		long max = 0;
+		for (long nanos : this.tickNanos) {
+			sum += nanos;
+			max = Math.max(max, nanos);
+		}
+		return new long[] {sum / TIMING_WINDOW, max};
+	}
 
 	public int itemsInTransitThrough(BlockPos pos) {
 		long p = pos.asLong();
